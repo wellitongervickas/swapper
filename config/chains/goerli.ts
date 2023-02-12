@@ -15,10 +15,16 @@ goerli.addHub({
 
 goerli.addToken({
   ETH: {
-    name: 'Wrapped Ethers',
-    symbol: 'WETH',
-    address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+    name: 'Ethers',
+    symbol: 'ETH',
+    address: '0x0000000000000000000000000000000000000000',
     decimals: 18
+  },
+  SWPR: {
+    name: 'Swapper Coin',
+    address: '0x8f4B904d7DcF2E6b125A3596A74D34737F9A954a',
+    decimals: 6,
+    symbol: 'SWPR'
   }
 })
 

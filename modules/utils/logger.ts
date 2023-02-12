@@ -5,11 +5,12 @@ class Logger {
     errorMessage?: Error,
     silent?: boolean
   ) {
-    if (silent) return
-
     const extendedError = errorMessage?.message
       ? errorMessage.message
       : errorMessage
+    console.error(extendedError)
+
+    if (silent) return
 
     throw new Error(`${error}: ${extendedError}`, {
       cause: {
