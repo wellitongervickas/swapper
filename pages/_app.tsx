@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css'
 import config from '@/config'
 import head from '@/modules/utils/head'
 
-import LayoutDefault from '@/componets/shared/layouts/Default'
+import LayoutDefault from '@/components/shared/layouts/Default'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

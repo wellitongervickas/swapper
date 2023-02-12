@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import classnames from '@/modules/utils/classnames'
+import Header from '@/components/shared/Header'
 
 interface LayoutDefaultProps {
   children: ReactNode
@@ -14,8 +15,9 @@ export const LayoutDefault = ({ children, className }: LayoutDefaultProps) => {
         'tracking-wide text-neutral-200'
       ])}
     >
-      <main className='pb-12'>
-        <div className='py-5 container'>{children}</div>
+      <Header />
+      <main>
+        <div className='p-4'>{children}</div>
       </main>
     </div>
   )
