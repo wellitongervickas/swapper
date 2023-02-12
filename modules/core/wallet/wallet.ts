@@ -34,6 +34,7 @@ class Wallet {
   }
 
   async connect() {
+    console.log(this.#store)
     if (!this.provider) {
       return
     }
@@ -48,7 +49,7 @@ class Wallet {
     } catch (error: any) {
       this.#store._error = error.message
 
-      if (error.cause.code !== ProviderErrors.UserRejected) {
+      if (error?.cause?.code !== ProviderErrors.UserRejected) {
         this.disconnect()
       }
     } finally {

@@ -5,20 +5,14 @@ import {
 } from '@/modules/core/wallet/store/state'
 
 import { merge } from '@/modules/utils/objects'
+import { StateProperties } from '../types/store'
 
-type StateProperties = {
-  [P in keyof State]: {
-    enumerable: boolean
-    set: ((value: State[P]) => void) | undefined
-    get: (() => State[P]) | undefined
-  }
-}
-
-class StoreProxy {
+class StoreProxy extends DefaultState {
   #state: State
 
   constructor(state: State) {
-    this.#state = state
+    super()
+
     Object.defineProperties(
       this,
       Object.keys(state).reduce((thisContext, key) => {
@@ -30,12 +24,13 @@ class StoreProxy {
             enumerable: true,
             set: property[propertyKey]?.set,
             get: property[propertyKey]?.get
-          } as StateProperties[keyof State]
+          } as StateProperties<State>[keyof State]
         })
 
         return thisContext
       }, {})
     )
+    this.#state = state
   }
 
   connect({ address, chainId, balance, ens }: Partial<DefaultState>) {

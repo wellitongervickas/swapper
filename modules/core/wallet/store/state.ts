@@ -1,22 +1,22 @@
-import type { StateMethods } from '@hookstate/core'
+import type { StateMethods, State as IState } from '@hookstate/core'
 import { hookstate } from '@hookstate/core'
 
-export const DEFAULT_STATE = {
-  balance: '0',
-  ens: '',
-  address: '',
-  providerName: '',
-  connected: false,
-  connecting: false,
-  chainId: 0,
-  _error: ''
+export class DefaultState {
+  balance = '0'
+  ens = ''
+  address = ''
+  providerName = ''
+  connected = false
+  connecting = false
+  chainId = 0
+  _error = ''
 }
 
-export type DefaultState = typeof DEFAULT_STATE
+const instance = new DefaultState()
 
-const state = hookstate(DEFAULT_STATE)
+const state = hookstate(instance)
 
-type State = typeof state
+type State = IState<DefaultState>
 
 export type { State, StateMethods }
 

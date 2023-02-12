@@ -1,9 +1,10 @@
 import { merge } from '@/modules/utils/objects'
-import { ChainOptions, ChainHub } from './types'
+import { ChainOptions, ChainToken, ChainHub } from './types'
 
 export class Chain {
   #options: ChainOptions
   #hubs: ChainHub = {}
+  #tokens: ChainToken = {}
 
   constructor(options: ChainOptions) {
     this.#options = options
@@ -31,5 +32,17 @@ export class Chain {
 
   getHub(id: keyof ChainHub) {
     return this.#hubs[id]
+  }
+
+  addToken(token: ChainToken) {
+    this.#tokens = merge(this.#tokens, token)
+  }
+
+  get tokens() {
+    return this.#tokens
+  }
+
+  getToken(id: keyof ChainToken) {
+    return this.#tokens[id]
   }
 }
