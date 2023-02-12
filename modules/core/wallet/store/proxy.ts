@@ -1,68 +1,67 @@
-import type { State, DefaultState } from '@/modules/core/wallet/store/state'
+import {
+  State,
+  DefaultState,
+  StateMethods
+} from '@/modules/core/wallet/store/state'
+
+import { merge } from '@/modules/utils/objects'
+
+type StateProperties = {
+  [P in keyof State]: {
+    enumerable: boolean
+    set: ((value: State[P]) => void) | undefined
+    get: (() => State[P]) | undefined
+  }
+}
 
 class StoreProxy {
   #state: State
 
   constructor(state: State) {
     this.#state = state
-  }
+    Object.defineProperties(
+      this,
+      Object.keys(state).reduce((thisContext, key) => {
+        const property = state as StateMethods<DefaultState, {}>
+        const propertyKey = key as keyof StateMethods<DefaultState, {}>
 
-  set connected(connected: boolean) {
-    this.#state.connected.set(connected)
-  }
+        thisContext = merge(thisContext, {
+          [key]: {
+            enumerable: true,
+            set: property[propertyKey]?.set,
+            get: property[propertyKey]?.get
+          } as StateProperties[keyof State]
+        })
 
-  set connecting(connecting: boolean) {
-    this.#state.connecting.set(connecting)
-  }
-
-  set error(error: string) {
-    this.#state._error.set(error)
-  }
-
-  set address(address: string) {
-    this.#state.address.set(address)
-  }
-
-  set chainId(chainId: number) {
-    this.#state.chainId.set(chainId)
-  }
-
-  set providerName(providerName: string) {
-    this.#state.providerName.set(providerName)
-  }
-
-  set balance(balance: string) {
-    this.#state.balance.set(balance)
-  }
-
-  set ens(ens: string) {
-    this.#state.ens.set(ens)
+        return thisContext
+      }, {})
+    )
   }
 
   connect({ address, chainId, balance, ens }: Partial<DefaultState>) {
-    this.connected = true
+    this.#state.connected.set(true)
 
     if (address) {
-      this.address = address
+      this.#state.address.set(address)
     }
 
     if (chainId) {
-      this.chainId = chainId
+      this.#state.chainId.set(chainId)
     }
 
     if (balance) {
-      this.balance = balance
+      this.#state.balance.set(balance)
     }
 
     if (ens) {
-      this.ens = ens
+      this.#state.ens.set(ens)
     }
   }
 
   disconnect() {
-    this.connected = false
-    this.connecting = false
-    this.address = ''
+    this.#state.connected.set(false)
+    this.#state.connecting.set(false)
+    this.#state.address.set('')
   }
 }
 

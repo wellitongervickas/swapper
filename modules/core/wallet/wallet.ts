@@ -18,13 +18,13 @@ class Wallet {
   }
 
   async use(provider: Provider) {
-    this.#store.error = ''
+    this.#store._error = ''
 
     try {
       const providerInstance = await provider.install()
       this.#setProvider(providerInstance)
     } catch (error: any) {
-      this.#store.error = error.message
+      this.#store._error = error.message
     }
   }
 
@@ -39,14 +39,14 @@ class Wallet {
     }
 
     this.#store.connecting = true
-    this.#store.error = ''
+    this.#store._error = ''
 
     try {
       await this.provider.login()
       await this.#refetchAccount()
       this.#setProviderListeners()
     } catch (error: any) {
-      this.#store.error = error.message
+      this.#store._error = error.message
 
       if (error.cause.code !== ProviderErrors.UserRejected) {
         this.disconnect()
@@ -65,7 +65,7 @@ class Wallet {
         this.#store.connect(account)
       }
     } catch (error: any) {
-      this.#store.error = error.message
+      this.#store._error = error.message
       this.#store.disconnect()
     }
   }

@@ -1,4 +1,4 @@
-import type { State as HookstateState } from '@hookstate/core'
+import type { StateMethods } from '@hookstate/core'
 import { hookstate } from '@hookstate/core'
 
 export const DEFAULT_STATE = {
@@ -16,6 +16,8 @@ export type DefaultState = typeof DEFAULT_STATE
 
 const state = hookstate(DEFAULT_STATE)
 
-export type State = HookstateState<DefaultState>
+type State = typeof state
+
+export type { State, StateMethods }
 
 export default state
