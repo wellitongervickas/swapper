@@ -16,14 +16,14 @@ class StoreProxy extends DefaultState {
     Object.defineProperties(
       this,
       Object.keys(state).reduce((thisContext, key) => {
-        const property = state as StateMethods<DefaultState, {}>
-        const propertyKey = key as keyof StateMethods<DefaultState, {}>
+        const propertyKey = key as keyof State
+        let property = state[propertyKey] as StateMethods<{}, {}>
 
         thisContext = merge(thisContext, {
           [key]: {
             enumerable: true,
-            set: property[propertyKey]?.set,
-            get: property[propertyKey]?.get
+            set: property?.set,
+            get: property?.get
           } as StateProperties<State>[keyof State]
         })
 

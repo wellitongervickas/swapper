@@ -30,8 +30,8 @@ class Wallet {
   }
 
   #setProvider(provider: Provider) {
-    this.#store.providerName = provider.name
     this.provider = provider
+    this.#store.providerName = provider.name
   }
 
   async connect() {
