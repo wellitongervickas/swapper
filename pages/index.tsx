@@ -5,8 +5,6 @@ export default function Home() {
   const { balance: tokenBalance } = useSwapperToken()
   const { balance: nativeBalance } = useNativeToken()
 
-  console.log(tokenBalance, nativeBalance)
-
   return (
     <>
       <main>

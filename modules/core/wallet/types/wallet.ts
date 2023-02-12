@@ -2,7 +2,9 @@ import type { Web3Provider, Listener } from '@ethersproject/providers'
 import Signer from '@/modules/core/wallet/signer'
 
 export type WalletOptions = {
-  defaultChainId?: number
+  defaultChainId: number
+  allowedChains: number[]
+  onlyAllowedChains?: boolean
 }
 
 interface Provider {

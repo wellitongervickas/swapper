@@ -5,16 +5,17 @@ import { ProviderErrors } from './types/error'
 class Wallet {
   provider?: Provider
   #store: Store
+  #options: WalletOptions
 
-  constructor(store: Store, options?: WalletOptions) {
+  constructor(store: Store, options: WalletOptions) {
     this.#store = store
-    this.#handleOptions(options)
+    this.#options = options
+
+    this.#handleOptions()
   }
 
-  #handleOptions(options?: WalletOptions) {
-    if (options?.defaultChainId) {
-      this.#store.chainId = options?.defaultChainId
-    }
+  #handleOptions() {
+    this.#store.chainId = this.#options.defaultChainId
   }
 
   async use(provider: Provider) {
@@ -34,7 +35,6 @@ class Wallet {
   }
 
   async connect() {
-    console.log(this.#store)
     if (!this.provider) {
       return
     }
@@ -46,6 +46,9 @@ class Wallet {
       await this.provider.login()
       await this.#refetchAccount()
       this.#setProviderListeners()
+      if (this.#options.onlyAllowedChains) {
+        this.switchToAllowedChainId()
+      }
     } catch (error: any) {
       this.#store._error = error.message
 
@@ -76,6 +79,13 @@ class Wallet {
     this.provider?.onChainChanged(this.#onChainChanged.bind(this))
     this.provider?.onDisconnect(this.disconnect.bind(this))
     this.provider?.onConnect(this.#onConnect.bind(this))
+  }
+
+  switchToAllowedChainId() {
+    const currentChain = this.#store.chainId
+    const isNetworkAllowed = this.#options.allowedChains.includes(currentChain)
+    if (isNetworkAllowed) return
+    this.provider?.switchNetwork(this.#options.defaultChainId)
   }
 
   async disconnect() {
