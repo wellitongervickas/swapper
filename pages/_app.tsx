@@ -4,11 +4,8 @@ import Head from 'next/head'
 import LayoutDefault from '@/components/shared/layouts/Default'
 import config from '@/config'
 import head from '@/modules/utils/head'
-import useWalletInitializer from '@/modules/core/wallet/hooks/useWalletInitializer'
 
 export default function App({ Component, pageProps }: AppProps) {
-  useWalletInitializer()
-
   return (
     <>
       <Head>

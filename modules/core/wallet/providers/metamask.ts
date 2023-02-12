@@ -85,8 +85,9 @@ class Metamask implements Provider {
   }
 
   onAccountsChanged(callback: Listener) {
-    const listener = this.instance?.listeners('accountsChanged').find(callback)
-    if (listener) return
+    const accountsChangedListener =
+      this.instance?.listenerCount('accountsChanged')
+    if (accountsChangedListener) return
 
     this.#ethereum?.on('accountsChanged', ([account]: string[]) => {
       callback(account)
@@ -94,22 +95,22 @@ class Metamask implements Provider {
   }
 
   onChainChanged(callback: Listener) {
-    const listener = this.instance?.listeners('chainChanged').find(callback)
-    if (listener) return
+    const accountsChangedListener = this.instance?.listenerCount('chainChanged')
+    if (accountsChangedListener) return
 
     this.#ethereum?.on('chainChanged', callback)
   }
 
   onConnect(callback: Listener) {
-    const listener = this.instance?.listeners('connect').find(callback)
-    if (listener) return
+    const accountsChangedListener = this.instance?.listenerCount('connect')
+    if (accountsChangedListener) return
 
     this.#ethereum?.on('connect', callback)
   }
 
   onDisconnect(callback: Listener) {
-    const listener = this.instance?.listeners('disconnect').find(callback)
-    if (listener) return
+    const accountsChangedListener = this.instance?.listenerCount('disconnect')
+    if (accountsChangedListener) return
 
     this.#ethereum?.on('disconnect', callback)
   }
