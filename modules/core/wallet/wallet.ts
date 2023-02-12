@@ -45,7 +45,9 @@ class Wallet {
     try {
       await this.provider.login()
       await this.#refetchAccount()
+
       this.#setProviderListeners()
+
       if (this.#options.onlyAllowedChains) {
         this.switchToAllowedChainId()
       }
@@ -63,10 +65,9 @@ class Wallet {
   async #refetchAccount() {
     try {
       const account = await this.provider?.signer?.getStatus()
-
       if (account) {
-        this.#setProviderListeners()
         this.#store.connect(account)
+        this.#setProviderListeners()
       }
     } catch (error: any) {
       this.#store._error = error.message

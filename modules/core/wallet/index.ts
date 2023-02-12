@@ -1,10 +1,10 @@
 import Wallet from '@/modules/core/wallet/wallet'
 import store from '@/modules/core/wallet/store'
-import appConfig from '@/config'
+import config from '@/config'
 
 const wallet = new Wallet(store, {
-  defaultChainId: appConfig.providers.defaultChainId,
-  allowedChains: Object.values(appConfig.chains).map((chain) => chain.id),
+  defaultChainId: config.providers.defaultChainId,
+  allowedChains: Object.values(config.chains).map((chain) => chain.id),
   onlyAllowedChains: true
 })
 

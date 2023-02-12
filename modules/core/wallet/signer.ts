@@ -22,29 +22,17 @@ class Signer {
     return balance.toString()
   }
 
-  async getEns(): Promise<string> {
-    try {
-      const address = await this.getAddress()
-      const ens = await this.instance.provider.lookupAddress(address)
-      return ens || ''
-    } catch {
-      return ''
-    }
-  }
-
   async getStatus() {
-    const [address, chainId, balance, ens] = await Promise.all([
+    const [address, chainId, balance] = await Promise.all([
       this.getAddress(),
       this.getChainId(),
-      this.getBalance(),
-      this.getEns()
+      this.getBalance()
     ])
 
     return {
       address,
       chainId,
-      balance,
-      ens
+      balance
     }
   }
 }

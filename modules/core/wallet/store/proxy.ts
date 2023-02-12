@@ -33,30 +33,26 @@ class StoreProxy extends DefaultState {
     this.#state = state
   }
 
-  connect({ address, chainId, balance, ens }: Partial<DefaultState>) {
-    this.#state.connected.set(true)
+  connect({ address, chainId, balance }: Partial<DefaultState>) {
+    this.connected = true
 
     if (address) {
-      this.#state.address.set(address)
+      this.address = address
     }
 
     if (chainId) {
-      this.#state.chainId.set(chainId)
+      this.chainId = chainId
     }
 
     if (balance) {
-      this.#state.balance.set(balance)
-    }
-
-    if (ens) {
-      this.#state.ens.set(ens)
+      this.balance = balance
     }
   }
 
   disconnect() {
-    this.#state.connected.set(false)
-    this.#state.connecting.set(false)
-    this.#state.address.set('')
+    this.connected = false
+    this.connecting = false
+    this.address = ''
   }
 }
 

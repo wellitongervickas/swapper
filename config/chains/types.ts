@@ -1,3 +1,5 @@
+import { Token } from '@/modules/core/tokens/types/token'
+
 export type ChainOptions = {
   id: number
   scanURL: string
@@ -12,10 +14,5 @@ export type ChainHub = {
 }
 
 export type ChainToken = {
-  [symbol: string]: {
-    address: string
-    symbol: string
-    decimals: number
-    name: string
-  }
+  [symbol: string]: Token
 }

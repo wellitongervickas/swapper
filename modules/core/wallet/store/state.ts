@@ -3,7 +3,6 @@ import { hookstate } from '@hookstate/core'
 
 export class DefaultState {
   balance = '0'
-  ens = ''
   address = ''
   providerName = ''
   connected = false

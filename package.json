@@ -13,6 +13,7 @@
     "@hookstate/core": "^4.0.0",
     "@hookstate/persistence": "^3.0.1",
     "@metamask/detect-provider": "^2.0.0",
+    "@uniswap/v3-sdk": "^3.9.0",
     "classnames": "^2.3.2",
     "ethers": "5.7.2",
     "lodash": "^4.17.21",

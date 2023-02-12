@@ -23,10 +23,7 @@ class Metamask implements Provider {
   signer: Signer | undefined
 
   async install() {
-    const _ethereum = await detectEthereumProvider({
-      mustBeMetaMask: true,
-      timeout: 0
-    })
+    const _ethereum = await detectEthereumProvider()
 
     if (_ethereum) {
       this.#ethereum = _ethereum
@@ -50,10 +47,11 @@ class Metamask implements Provider {
     } else {
       try {
         await this.#ethereum.request({ method: 'eth_requestAccounts' })
-      } catch {
+      } catch (error: any) {
         Logger.error(
           `${this.name} has rejected by user`,
-          ProviderErrors.UserRejected
+          ProviderErrors.UserRejected,
+          error
         )
       }
     }
