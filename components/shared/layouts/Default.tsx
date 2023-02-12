@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import classnames from '@/modules/utils/classnames'
 import Header from '@/components/shared/Header'
+import WalletBar from '../wallet/Bar'
 
 interface LayoutDefaultProps {
   children: ReactNode
@@ -16,6 +17,7 @@ export const LayoutDefault = ({ children, className }: LayoutDefaultProps) => {
       ])}
     >
       <Header />
+      <WalletBar />
       <main>
         <div className='p-4'>{children}</div>
       </main>

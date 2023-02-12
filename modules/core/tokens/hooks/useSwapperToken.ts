@@ -15,7 +15,9 @@ function useSwapperToken() {
   useEffect(() => {
     ;(async () => {
       const balance = await call('balanceOf', state.address)
-      setBalance(balance)
+      if (balance) {
+        setBalance(balance)
+      }
     })()
   }, [call, state.address])
 
