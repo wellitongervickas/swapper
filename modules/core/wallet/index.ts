@@ -1,24 +1,19 @@
 import type { Store } from '@/modules/core/wallet/store'
-import type { Provider } from './types/wallet'
+import type { Provider, WalletOptions } from './types/wallet'
 import { ProviderErrors } from './types/error'
-
-type Options = {
-  defaultChainId?: number
-}
 
 class Wallet {
   provider?: Provider
   #store: Store
 
-  constructor(store: Store, options?: Options) {
+  constructor(store: Store, options?: WalletOptions) {
     this.#store = store
-
     this.#handleOptions(options)
   }
 
-  #handleOptions(options?: Options) {
+  #handleOptions(options?: WalletOptions) {
     if (options?.defaultChainId) {
-      this.#store.chainId = options.defaultChainId
+      this.#store.chainId = options?.defaultChainId
     }
   }
 
@@ -26,8 +21,8 @@ class Wallet {
     this.#store.error = ''
 
     try {
-      const injectedProvider = await provider.install()
-      this.#setProvider(injectedProvider)
+      const providerInstance = await provider.install()
+      this.#setProvider(providerInstance)
     } catch (error: any) {
       this.#store.error = error.message
     }
