@@ -1,29 +1,22 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
-import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import useWallet from '../../wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
-import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
+import usePoolContract from './usePoolContract'
 
 function useSwapNativeToToken() {
   const config = useChainConfig()
-  const { state, signerOrProvider } = useWallet()
+  const { state } = useWallet()
 
   const [poolFactory, setFactory] = useState<PoolFactory>()
 
+  const { call } = usePoolContract({ address: poolFactory?.address })
+
   const getConstants = async () => {
-    if (!poolFactory) return
-
-    const poolContract = new ethers.Contract(
-      poolFactory.address,
-      IUniswapV3PoolABI.abi,
-      signerOrProvider
-    )
-
     const [tokenA, tokenB, fee] = await Promise.all([
-      poolContract.token0(),
-      poolContract.token1(),
-      poolContract.fee()
+      call('token0'),
+      call('token1'),
+      call('fee')
     ])
 
     return {
