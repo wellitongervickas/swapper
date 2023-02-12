@@ -9,7 +9,7 @@ const goerli = new Chain({
 
 goerli.addHub({
   uniswap: {
-    address: process.env.NEXT_PUBLIC_GOERLI_POOL_ADDRESS!
+    address: process.env.NEXT_PUBLIC_GOERLI_POOL_FACTORY_ADDRESS!
   }
 })
 

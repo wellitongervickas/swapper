@@ -1,1 +1,1 @@
-export { default as goerli } from "./goerli";
+export { default as goerli } from './goerli'

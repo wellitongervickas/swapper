@@ -10,6 +10,7 @@ export class PoolFactory {
   fee: FeeAmount = FeeAmount.MEDIUM
 
   constructor(params: PoolFactoryConstructor) {
+    console.log(params)
     this.chainId = params.chainId
     this.factoryAddress = params.factoryAddress
     this.tokenA = new Token(
