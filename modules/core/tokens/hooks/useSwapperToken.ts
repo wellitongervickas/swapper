@@ -3,7 +3,7 @@ import { getConfigByChainId } from '@/config/utils/chains'
 import { useWallet } from '@/modules/core/wallet/hooks/useWallet'
 import { useState, useEffect } from 'react'
 
-function useSwapperCoin() {
+function useSwapperToken() {
   const { state } = useWallet()
   const config = getConfigByChainId(state.chainId)
 
@@ -24,4 +24,4 @@ function useSwapperCoin() {
   }
 }
 
-export default useSwapperCoin
+export default useSwapperToken
