@@ -6,18 +6,18 @@ import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 function useSwapperToken() {
   const { state } = useWallet()
   const config = useChainConfig()
-
   const [balance, setBalance] = useState('0')
 
-  const { getBalance } = useERC20Contract({
+  const { call } = useERC20Contract({
     address: config?.tokens.SWPR?.address
   })
 
   useEffect(() => {
-    if (state.connected) {
-      getBalance(state.address).then(setBalance)
-    }
-  }, [getBalance, state.address, state.connected])
+    ;(async () => {
+      const balance = await call('balanceOf', state.address)
+      setBalance(balance)
+    })()
+  }, [call, state.address])
 
   return {
     balance

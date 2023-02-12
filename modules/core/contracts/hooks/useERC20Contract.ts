@@ -19,14 +19,9 @@ export function useERC20Contract({ address }: UseERC20ContractProps) {
     setContract(contract)
   }, [signerOrProvider, setContract, walletState.chainId, address])
 
-  const getBalance = async (address: string) => {
-    const balance = await call('balanceOf', address)
-    return balance
-  }
-
   return {
     loading,
-    getBalance
+    call
   }
 }
 
