@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ESNext",
+    "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
