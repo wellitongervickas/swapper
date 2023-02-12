@@ -6,9 +6,9 @@ module.exports = {
         100: '#E8FF89',
         900: '#8AA814'
       },
-      grey: {
+      gray: {
         DEFAULT: '#8F8F8F',
-        100: '##343434',
+        100: '#CFCFD0',
         900: '#343434'
       }
     }
