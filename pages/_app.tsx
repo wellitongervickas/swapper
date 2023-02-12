@@ -1,10 +1,12 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 
+import 'tailwindcss/tailwind.css'
+
 import config from '@/config'
 import head from '@/modules/utils/head'
 
-import 'tailwindcss/tailwind.css'
+import LayoutDefault from '@/componets/shared/layouts/Default'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -18,7 +20,9 @@ export default function App({ Component, pageProps }: AppProps) {
           content={pageProps.description ?? config.meta.description}
         />
       </Head>
-      <Component {...pageProps} />
+      <LayoutDefault>
+        <Component {...pageProps} />
+      </LayoutDefault>
     </>
   )
 }
