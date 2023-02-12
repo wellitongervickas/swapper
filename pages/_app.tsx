@@ -1,14 +1,14 @@
+import 'tailwindcss/tailwind.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-
-import 'tailwindcss/tailwind.css'
-
+import LayoutDefault from '@/components/shared/layouts/Default'
 import config from '@/config'
 import head from '@/modules/utils/head'
-
-import LayoutDefault from '@/components/shared/layouts/Default'
+import useWalletInitializer from '@/modules/core/wallet/hooks/useWalletInitializer'
 
 export default function App({ Component, pageProps }: AppProps) {
+  useWalletInitializer()
+
   return (
     <>
       <Head>
