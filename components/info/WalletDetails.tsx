@@ -10,7 +10,7 @@ export const InfoWalletDetails = () => {
       <h2>Balances</h2>
       <ul>
         <li className='flex space-x-2'>
-          <span>ETH:</span>
+          <span>WETH:</span>
           <span>{nativeBalance}</span>
         </li>
         <li className='flex space-x-2'>

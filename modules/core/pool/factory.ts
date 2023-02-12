@@ -1,7 +1,6 @@
 import { PoolFactoryConstructor } from './types/factory'
 import { computePoolAddress, FeeAmount } from '@uniswap/v3-sdk'
 import { Token } from '@uniswap/sdk-core'
-
 export class PoolFactory {
   chainId: number
   factoryAddress: string
@@ -10,9 +9,9 @@ export class PoolFactory {
   fee: FeeAmount = FeeAmount.MEDIUM
 
   constructor(params: PoolFactoryConstructor) {
-    console.log(params)
     this.chainId = params.chainId
     this.factoryAddress = params.factoryAddress
+
     this.tokenA = new Token(
       params.chainId,
       params.tokenA.address,
@@ -25,7 +24,7 @@ export class PoolFactory {
     )
   }
 
-  getAddress() {
+  get address() {
     return computePoolAddress({
       factoryAddress: this.factoryAddress,
       tokenA: this.tokenA,

@@ -8,16 +8,19 @@ const goerli = new Chain({
 })
 
 goerli.addHub({
-  uniswap: {
+  uniswapFactory: {
     address: process.env.NEXT_PUBLIC_GOERLI_POOL_FACTORY_ADDRESS!
+  },
+  uniswapQuoter: {
+    address: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
   }
 })
 
 goerli.addToken({
-  ETH: {
-    name: 'Ethers',
-    symbol: 'ETH',
-    address: '0x0000000000000000000000000000000000000000',
+  WETH: {
+    name: 'Wrapper Ethers',
+    symbol: 'WETH',
+    address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
     decimals: 18
   },
   SWPR: {

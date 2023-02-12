@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 
 const FALLBACK_CHAIN = config.chains.goerli
 
-function useChainConfig() {
+export function useChainConfig() {
   const { state } = useWallet()
 
   const chainConfig = useMemo(
