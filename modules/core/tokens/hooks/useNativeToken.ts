@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 
 function useNativeToken() {
   const { state, wallet } = useWallet()
-
   const [balance, setBalance] = useState('0')
 
   useEffect(() => {
