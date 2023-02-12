@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <>
-      <main className='h-full w-full'>Swapper</main>
+      <main>Swapper</main>
     </>
   )
 }
