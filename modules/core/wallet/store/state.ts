@@ -9,7 +9,6 @@ export const DEFAULT_STATE = {
   connected: false,
   connecting: false,
   chainId: 0,
-  modalOpen: false,
   _error: ''
 }
 

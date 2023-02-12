@@ -97,10 +97,6 @@ class Wallet {
     await this.#refetchAccount()
   }
 
-  setModalStatus(isOpen: boolean) {
-    this.#store.modalOpen = isOpen
-  }
-
   async #onConnect() {
     await this.#refetchAccount()
   }

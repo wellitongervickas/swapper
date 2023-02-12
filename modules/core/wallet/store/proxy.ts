@@ -39,10 +39,6 @@ class StoreProxy {
     this.#state.ens.set(ens)
   }
 
-  set modalOpen(modalOpen: boolean) {
-    this.#state.modalOpen.set(modalOpen)
-  }
-
   connect({ address, chainId, balance, ens }: Partial<DefaultState>) {
     this.connected = true
 
