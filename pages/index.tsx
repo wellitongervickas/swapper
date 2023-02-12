@@ -1,17 +1,10 @@
-import Head from "next/head";
+import config from "@/config";
 
 export default function Home() {
+  console.log(config.chains.goerli.id);
+
   return (
     <>
-      <Head>
-        <title>Swapper DeFi</title>
-        <meta
-          name="description"
-          content="Swap tokens on decentralzed finance app"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main>Swapper</main>
     </>
   );

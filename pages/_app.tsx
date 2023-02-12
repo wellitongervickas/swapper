@@ -1,6 +1,22 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
+import Head from "next/head";
+
+import config from "@/config";
+import head from "@/modules/utils/head";
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <>
+      <Head>
+        <title>{head.renderTitle(config.name, pageProps)}</title>
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content={pageProps.description ?? config.meta.description}
+        />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
 }
