@@ -25,9 +25,14 @@ function useSwapNativeToToken() {
     ]
   )
 
-  const { call } = usePoolContract({ address: poolFactory?.address })
+  const { call, contract } = usePoolContract({ address: poolFactory?.address })
 
-  const getConstants = useCallback(async (): Promise<PoolConstants> => {
+  const getConstants = useCallback(async (): Promise<
+    PoolConstants | undefined
+  > => {
+    if (!contract) {
+      return
+    }
     const [tokenA, tokenB, fee] = await Promise.all([
       call('token0'),
       call('token1'),
@@ -39,9 +44,12 @@ function useSwapNativeToToken() {
       tokenB,
       fee
     }
-  }, [call])
+  }, [call, contract])
 
-  const getInfo = useCallback(async (): Promise<PoolInfo> => {
+  const getInfo = useCallback(async (): Promise<PoolInfo | undefined> => {
+    if (!contract) {
+      return
+    }
     const [tickSpacing, liquidity, slot0] = await Promise.all([
       call('tickSpacing'),
       call('liquidity'),
@@ -54,7 +62,7 @@ function useSwapNativeToToken() {
       sqrtPriceX96: slot0?.[0],
       tick: slot0?.[1]
     }
-  }, [call])
+  }, [call, contract])
 
   return { poolFactory, getConstants, getInfo }
 }

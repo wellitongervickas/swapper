@@ -9,7 +9,8 @@ interface UsePoolContractProps {
 
 export default function usePoolContract({ address }: UsePoolContractProps) {
   const { signerOrProvider } = useWallet()
-  const { call, loading, setContract } = useContractCaller<PoolContract>()
+  const { call, loading, setContract, contract } =
+    useContractCaller<PoolContract>()
 
   useEffect(() => {
     if (!signerOrProvider || !address) return
@@ -18,6 +19,7 @@ export default function usePoolContract({ address }: UsePoolContractProps) {
 
   return {
     call,
-    loading
+    loading,
+    contract
   }
 }
