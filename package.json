@@ -11,6 +11,7 @@
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
     "@hookstate/core": "^4.0.0",
+    "@hookstate/persistence": "^3.0.1",
     "@metamask/detect-provider": "^2.0.0",
     "ethers": "5.7.2",
     "lodash": "^4.17.21",

@@ -1,23 +1,23 @@
 type GetTitleProps = {
-  title?: string;
-};
+  title?: string
+}
 
 export const renderTitle = (sitename?: string, props?: GetTitleProps) => {
-  const hasTitle = props && "title" in props;
+  const hasTitle = props && 'title' in props
 
   if (!sitename && hasTitle) {
-    return props.title;
+    return props.title
   }
 
   if (!hasTitle) {
-    return sitename;
+    return sitename
   }
 
-  return `${sitename} ${hasTitle && `- ${props.title}`}`;
-};
+  return `${sitename} ${hasTitle && `- ${props.title}`}`
+}
 
-const head = {
-  renderTitle,
-};
+const headUtils = {
+  renderTitle
+}
 
-export default head;
+export default headUtils

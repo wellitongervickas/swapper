@@ -1,11 +1,14 @@
-import * as chains from "./chains";
+import * as chains from './chains'
 
 const config = {
-  name: "Swapper",
+  name: 'Swapper',
   meta: {
-    description: "Decentralized finance app to swap tokens",
+    description: 'Decentralized finance app to swap tokens'
   },
-  chains,
-};
+  providers: {
+    defaultChainId: chains.goerli.id
+  },
+  chains
+}
 
-export default config;
+export default config
