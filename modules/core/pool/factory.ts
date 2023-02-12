@@ -17,6 +17,7 @@ export class PoolFactory {
       params.tokenA.address,
       params.tokenA.decimals
     )
+
     this.tokenB = new Token(
       params.chainId,
       params.tokenB.address,
