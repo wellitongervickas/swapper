@@ -1,15 +1,17 @@
 import useSwapNativeToToken from '@/modules/core/pool/hooks/usePoolNativeToToken'
+import { commify, formatUnits } from 'ethers/lib/utils'
 import { ChangeEvent, useState } from 'react'
 
 const SwapDetails = () => {
-  const { getQuoteOut } = useSwapNativeToToken()
+  const { getQuoteOut, poolFactory } = useSwapNativeToToken()
 
   const [quote, setQuote] = useState('0')
 
   const handleGetQuote = async (amount: string) => {
-    if (!amount) return
-    const quoted = await getQuoteOut(+amount)
-    setQuote(quoted)
+    if (!+amount) return
+    console.log(amount)
+    const quoted = await getQuoteOut(amount)
+    setQuote(`${quoted}`)
   }
 
   const handleChangeTokenIn = (event: ChangeEvent<HTMLInputElement>) => {
@@ -21,11 +23,15 @@ const SwapDetails = () => {
       <div>Quote value: {quote}</div>
       <div className='flex flex-col'>
         ETH amount
-        <input type='text' onChange={handleChangeTokenIn} />
+        <input type='number' onChange={handleChangeTokenIn} />
       </div>
       <div className='flex flex-col'>
         SWPR amount
-        <input type='text' disabled value={quote || '0'} />
+        <input
+          type='number'
+          disabled
+          value={commify(formatUnits(quote, poolFactory.tokenB.decimals))}
+        />
       </div>
     </div>
   )

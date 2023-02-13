@@ -5,7 +5,8 @@ import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
-import { fromReadableAmount } from '../utils/pool'
+import BigNumber from 'bignumber.js'
+import { parseUnits } from 'ethers/lib/utils'
 
 function useSwapNativeToToken() {
   const config = useChainConfig()
@@ -68,7 +69,7 @@ function useSwapNativeToToken() {
   }, [call, contract])
 
   const getQuoteOut = useCallback(
-    async (amount: number) => {
+    async (amount: string) => {
       const state = await getState()
       if (!state) return '0'
 
@@ -81,12 +82,11 @@ function useSwapNativeToToken() {
         state.tick
       )
 
-      const outputAmount = fromReadableAmount(
-        amount * parseFloat(pool.token1Price.toFixed(2)),
-        poolFactory.tokenB.decimals
-      ).toString()
+      const total = new BigNumber(amount)
+        .multipliedBy(pool.token1Price.toFixed(0))
+        .toString()
 
-      return outputAmount
+      return parseUnits(total, poolFactory.tokenB.decimals).toNumber()
     },
     [getState, poolFactory]
   )
