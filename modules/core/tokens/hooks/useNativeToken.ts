@@ -6,8 +6,8 @@ function useNativeToken() {
   const config = useChainConfig()
 
   return {
-    balance: state.balance,
-    decimals: config.tokens.WETH.decimals
+    ...config.tokens.WETH,
+    balance: state.balance
   }
 }
 

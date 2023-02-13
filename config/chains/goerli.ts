@@ -20,7 +20,7 @@ goerli.addToken({
   WETH: {
     name: 'Wrapper Ethers',
     symbol: 'WETH',
-    address: '0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6',
+    address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
     decimals: 18
   },
   SWPR: {

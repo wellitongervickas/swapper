@@ -22,8 +22,8 @@ function useSwapperToken() {
   }, [call, state.address])
 
   return {
-    balance,
-    decimals: config.tokens.SWPR.decimals
+    ...config.tokens.SWPR,
+    balance
   }
 }
 

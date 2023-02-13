@@ -3,12 +3,15 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import { FeeAmount, Pool } from '@uniswap/v3-sdk'
-import BigNumber from 'bignumber.js'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
+import useQuoterContract from './useQuoterContract'
+import { QuoteExactInputSingleParams } from '../types/quoter'
+import { parseUnits } from 'ethers/lib/utils'
 
 interface UsePoolSwapProps {
   factoryAddress: string
+  quoterAddress: string
   tokenA: Token
   tokenB: Token
   fee: keyof typeof FeeAmount
@@ -18,6 +21,7 @@ function usePoolSwap({
   tokenA,
   tokenB,
   factoryAddress,
+  quoterAddress,
   fee
 }: UsePoolSwapProps) {
   const { state } = useWallet()
@@ -34,7 +38,10 @@ function usePoolSwap({
     [tokenA, tokenB, factoryAddress, fee, state.chainId]
   )
 
-  const { call, contract } = usePoolContract({ address: poolFactory?.address })
+  const { call: poolCall, contract } = usePoolContract({
+    address: poolFactory?.address
+  })
+  const { call: quoterCall } = useQuoterContract({ address: quoterAddress })
 
   const getConstants = useCallback(async (): Promise<
     PoolConstants | undefined
@@ -43,9 +50,9 @@ function usePoolSwap({
       return
     }
     const [tokenA, tokenB, fee] = await Promise.all([
-      call('token0'),
-      call('token1'),
-      call('fee')
+      poolCall('token0'),
+      poolCall('token1'),
+      poolCall('fee')
     ])
 
     return {
@@ -53,16 +60,16 @@ function usePoolSwap({
       tokenB,
       fee
     }
-  }, [call, contract])
+  }, [poolCall, contract])
 
   const getState = useCallback(async (): Promise<PoolInfo | undefined> => {
     if (!contract) {
       return
     }
     const [tickSpacing, liquidity, slot0] = await Promise.all([
-      call('tickSpacing'),
-      call('liquidity'),
-      call('slot0')
+      poolCall('tickSpacing'),
+      poolCall('liquidity'),
+      poolCall('slot0')
     ])
 
     return {
@@ -71,28 +78,29 @@ function usePoolSwap({
       sqrtPriceX96: slot0?.[0],
       tick: slot0?.[1]
     }
-  }, [call, contract])
+  }, [poolCall, contract])
 
   const getQuoteOut = useCallback(
     async (amount: string) => {
       const [state, constants] = await Promise.all([getState(), getConstants()])
       if (!state || !constants) return '0'
 
-      const pool = new Pool(
-        poolFactory.tokenA,
-        poolFactory.tokenB,
-        constants.fee,
-        state.sqrtPriceX96.toString(),
-        state.liquidity.toString(),
-        state.tick
+      const amountIn = parseUnits(amount, poolFactory.tokenA.decimals)
+      if (amountIn.lte(0)) return '0'
+
+      const quoteOut = await quoterCall<QuoteExactInputSingleParams>(
+        'quoteExactInputSingle',
+        {
+          token0: constants.tokenA,
+          token1: constants.tokenB,
+          fee: constants.fee,
+          amount: parseUnits(amount, poolFactory.tokenA.decimals)
+        }
       )
 
-      const token1Price = parseFloat(pool.token1Price.toFixed(2))
-      const total = new BigNumber(amount).multipliedBy(token1Price)
-
-      return total.toString()
+      return quoteOut.toString()
     },
-    [getState, poolFactory, getConstants]
+    [getState, getConstants, poolFactory, quoterCall]
   )
 
   return { poolFactory, getConstants, getState, getQuoteOut }
