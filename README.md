@@ -1,6 +1,13 @@
 Swapper DeFi
 
-## Getting Started
+> run demo [http://swapper-psi.vercel.app](http://swapper-psi.vercel.app)
+
+## Instructions
+
+- Get a [faucet](https://goerli.etherscan.io/address/0xF4D84843E3A0cbEAE3651612f9fAA5C9849b743d#writeContract#F3) of ERC20 SWPR token
+- You will need some WETH or ETH
+
+## Development
 
 First, run the development server:
 
@@ -19,4 +26,3 @@ yarn build && yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-Or run demo [http://swapper-psi.vercel.app](http://swapper-psi.vercel.app)

@@ -25,7 +25,7 @@ goerli.addToken({
   },
   SWPR: {
     name: 'Swapper Coin',
-    address: '0x8f4B904d7DcF2E6b125A3596A74D34737F9A954a',
+    address: '0xF4D84843E3A0cbEAE3651612f9fAA5C9849b743d',
     decimals: 6,
     symbol: 'SWPR'
   }
