@@ -6,7 +6,6 @@ import usePoolContract from './usePoolContract'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import BigNumber from 'bignumber.js'
 import { Token } from '@/modules/core/tokens/types/token'
-import { commify } from 'ethers/lib/utils'
 
 interface UsePoolSwapProps {
   factoryAddress: string
