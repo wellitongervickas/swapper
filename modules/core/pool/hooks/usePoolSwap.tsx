@@ -75,13 +75,13 @@ function usePoolSwap({
 
   const getQuoteOut = useCallback(
     async (amount: string) => {
-      const state = await getState()
-      if (!state) return '0'
+      const [state, constants] = await Promise.all([getState(), getConstants()])
+      if (!state || !constants) return '0'
 
       const pool = new Pool(
         poolFactory.tokenA,
         poolFactory.tokenB,
-        poolFactory.fee,
+        constants.fee,
         state.sqrtPriceX96.toString(),
         state.liquidity.toString(),
         state.tick
@@ -92,7 +92,7 @@ function usePoolSwap({
 
       return total.toString()
     },
-    [getState, poolFactory]
+    [getState, poolFactory, getConstants]
   )
 
   return { poolFactory, getConstants, getState, getQuoteOut }
