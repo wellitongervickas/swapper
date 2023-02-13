@@ -94,7 +94,7 @@ function usePoolSwap({
           token0: constants.tokenA,
           token1: constants.tokenB,
           fee: constants.fee,
-          amount: parseUnits(amount, poolFactory.tokenA.decimals)
+          amount: amountIn
         }
       )
 
