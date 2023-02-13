@@ -34,7 +34,8 @@ class QuoterContract {
       Logger.error(
         `${this.name} quoteExactInputSingle call failed`,
         ContractErrors.TxFailed,
-        error
+        error,
+        true
       )
 
       return '0'
