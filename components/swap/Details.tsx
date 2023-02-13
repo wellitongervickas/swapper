@@ -1,12 +1,11 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
-import { commify, formatUnits } from 'ethers/lib/utils'
 import { ChangeEvent, useState } from 'react'
 
 const SwapDetails = () => {
   const config = useChainConfig()
 
-  const { getQuoteOut, poolFactory } = usePoolSwap({
+  const { getQuoteOut } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     tokenA: config.tokens.WETH,
     tokenB: config.tokens.SWPR,
@@ -18,7 +17,7 @@ const SwapDetails = () => {
   const handleGetQuote = async (amount: string) => {
     if (!+amount) return
     const quoted = await getQuoteOut(amount)
-    setQuote(`${quoted}`)
+    setQuote(quoted)
   }
 
   const handleChangeTokenIn = (event: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +26,6 @@ const SwapDetails = () => {
 
   return (
     <div>
-      <div>Quote value: {quote}</div>
       <div className='flex flex-col'>
         ETH amount
         <input
@@ -38,11 +36,7 @@ const SwapDetails = () => {
       </div>
       <div className='flex flex-col'>
         SWPR amount
-        <input
-          type='number'
-          disabled
-          value={commify(formatUnits(quote, poolFactory.tokenB.decimals))}
-        />
+        <input type='text' disabled value={quote} />
       </div>
     </div>
   )

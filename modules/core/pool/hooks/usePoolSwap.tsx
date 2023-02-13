@@ -5,8 +5,8 @@ import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import BigNumber from 'bignumber.js'
-import { parseUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
+import { commify } from 'ethers/lib/utils'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -88,11 +88,10 @@ function usePoolSwap({
         state.tick
       )
 
-      const total = new BigNumber(amount)
-        .multipliedBy(pool.token1Price.toFixed(0))
-        .toString()
+      const token1Price = parseFloat(pool.token1Price.toFixed(2))
+      const total = new BigNumber(amount).multipliedBy(token1Price)
 
-      return parseUnits(total, poolFactory.tokenB.decimals).toNumber()
+      return total.toString()
     },
     [getState, poolFactory]
   )

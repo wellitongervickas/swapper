@@ -9,7 +9,7 @@ function useSwapperToken() {
   const [balance, setBalance] = useState('0')
 
   const { call } = useERC20Contract({
-    address: config?.tokens.SWPR?.address
+    address: config.tokens.SWPR.address
   })
 
   useEffect(() => {
@@ -22,7 +22,8 @@ function useSwapperToken() {
   }, [call, state.address])
 
   return {
-    balance
+    balance,
+    decimals: config.tokens.SWPR.decimals
   }
 }
 
