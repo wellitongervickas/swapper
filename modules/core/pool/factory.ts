@@ -6,11 +6,12 @@ export class PoolFactory {
   factoryAddress: string
   tokenA: Token
   tokenB: Token
-  fee: FeeAmount = FeeAmount.MEDIUM
+  fee: FeeAmount = FeeAmount.LOW
 
   constructor(params: PoolFactoryConstructor) {
     this.chainId = params.chainId
     this.factoryAddress = params.factoryAddress
+    this.fee = params.fee
 
     this.tokenA = new Token(
       params.chainId,

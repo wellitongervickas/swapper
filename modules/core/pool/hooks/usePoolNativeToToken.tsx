@@ -4,7 +4,7 @@ import useWallet from '../../wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import { Pool } from '@uniswap/v3-sdk'
+import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import { fromReadableAmount } from '../utils/pool'
 
 function useSwapNativeToToken() {
@@ -17,7 +17,8 @@ function useSwapNativeToToken() {
         chainId: state.chainId,
         factoryAddress: config.hubs.uniswapFactory.address,
         tokenA: config.tokens.WETH,
-        tokenB: config.tokens.SWPR
+        tokenB: config.tokens.SWPR,
+        fee: FeeAmount.LOW
       }),
     [
       config.hubs.uniswapFactory.address,
