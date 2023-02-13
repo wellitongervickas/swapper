@@ -9,16 +9,18 @@ export default function useContractCaller<CONTRACT = any>() {
       method: keyof CONTRACT,
       ...args: ARGUMENTS[]
     ): Promise<RETURN | undefined> => {
-      if (!contract) {
-        return
-      }
-
-      setLoading(true)
-
       try {
-        if (typeof contract[method] === 'function') {
-          return await (contract[method] as Function)(...args)
-        }
+        if (!contract) return
+        setLoading(true)
+
+        const result: RETURN =
+          typeof contract[method] === 'function'
+            ? await (contract[method] as Function)(...args)
+            : Promise.resolve(undefined)
+
+        return result
+      } catch {
+        return undefined
       } finally {
         setLoading(false)
       }

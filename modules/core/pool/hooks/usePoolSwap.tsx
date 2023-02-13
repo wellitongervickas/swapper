@@ -81,7 +81,7 @@ function usePoolSwap({
   }, [poolCall, contract])
 
   const getQuoteOut = useCallback(
-    async (amount: string) => {
+    async (amount: string): Promise<string> => {
       const [state, constants] = await Promise.all([getState(), getConstants()])
       if (!state || !constants) return '0'
 
@@ -98,7 +98,7 @@ function usePoolSwap({
         }
       )
 
-      return quoteOut
+      return quoteOut ?? '0'
     },
     [getState, getConstants, poolFactory, quoterCall]
   )
