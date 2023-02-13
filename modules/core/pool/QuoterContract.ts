@@ -17,7 +17,7 @@ class QuoterContract {
 
   async quoteExactInputSingle(
     params: QuoteExactInputSingleParams
-  ): Promise<string | undefined> {
+  ): Promise<string> {
     try {
       const payload = [
         params.token0,
@@ -29,13 +29,15 @@ class QuoterContract {
       const quotedAmountOut =
         await this.#contract.callStatic.quoteExactInputSingle(...payload)
 
-      return quotedAmountOut
+      return quotedAmountOut.toString()
     } catch (error: any) {
       Logger.error(
         `${this.name} quoteExactInputSingle call failed`,
         ContractErrors.TxFailed,
         error
       )
+
+      return '0'
     }
   }
 }

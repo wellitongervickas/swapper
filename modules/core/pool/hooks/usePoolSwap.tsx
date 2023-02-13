@@ -88,7 +88,7 @@ function usePoolSwap({
       const amountIn = parseUnits(amount, poolFactory.tokenA.decimals)
       if (amountIn.lte(0)) return '0'
 
-      const quoteOut = await quoterCall<QuoteExactInputSingleParams>(
+      const quoteOut = await quoterCall<QuoteExactInputSingleParams, string>(
         'quoteExactInputSingle',
         {
           token0: constants.tokenA,
@@ -98,7 +98,7 @@ function usePoolSwap({
         }
       )
 
-      return quoteOut.toString()
+      return quoteOut
     },
     [getState, getConstants, poolFactory, quoterCall]
   )
