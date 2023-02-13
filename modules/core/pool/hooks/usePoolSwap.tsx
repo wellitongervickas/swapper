@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
-import useWallet from '../../wallet/hooks/useWallet'
+import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import BigNumber from 'bignumber.js'
 import { parseUnits } from 'ethers/lib/utils'
-import { Token } from '../../tokens/types/token'
+import { Token } from '@/modules/core/tokens/types/token'
 
 interface UsePoolSwapProps {
   factoryAddress: string
