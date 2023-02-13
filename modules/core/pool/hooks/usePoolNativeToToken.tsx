@@ -4,6 +4,8 @@ import useWallet from '../../wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
+import { Pool } from '@uniswap/v3-sdk'
+import { fromReadableAmount } from '../utils/pool'
 
 function useSwapNativeToToken() {
   const config = useChainConfig()
@@ -46,7 +48,7 @@ function useSwapNativeToToken() {
     }
   }, [call, contract])
 
-  const getInfo = useCallback(async (): Promise<PoolInfo | undefined> => {
+  const getState = useCallback(async (): Promise<PoolInfo | undefined> => {
     if (!contract) {
       return
     }
@@ -64,7 +66,31 @@ function useSwapNativeToToken() {
     }
   }, [call, contract])
 
-  return { poolFactory, getConstants, getInfo }
+  const getQuoteOut = useCallback(
+    async (amount: number) => {
+      const state = await getState()
+      if (!state) return '0'
+
+      const pool = new Pool(
+        poolFactory.tokenA,
+        poolFactory.tokenB,
+        poolFactory.fee,
+        state.sqrtPriceX96.toString(),
+        state.liquidity.toString(),
+        state.tick
+      )
+
+      const outputAmount = fromReadableAmount(
+        amount * parseFloat(pool.token1Price.toFixed(2)),
+        poolFactory.tokenB.decimals
+      ).toString()
+
+      return outputAmount
+    },
+    [getState, poolFactory]
+  )
+
+  return { poolFactory, getConstants, getState, getQuoteOut }
 }
 
 export default useSwapNativeToToken
