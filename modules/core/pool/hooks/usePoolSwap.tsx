@@ -12,7 +12,7 @@ import { CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core'
 import { TokenTrade } from '../types/router'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
-import GenericContract, { DEFAULT_GAS_LIMIT } from '../../contracts/Generic'
+import GenericContract from '../../contracts/Generic'
 import { ethers } from 'ethers'
 
 interface UsePoolSwapProps {
@@ -168,7 +168,9 @@ function usePoolSwap({
       recipient: state.address
     })
 
-    const estimate = await GenericContract.getGasLimit(DEFAULT_GAS_LIMIT)
+    const estimate = await GenericContract.getGasLimit(
+      ethers.BigNumber.from(100000000000)
+    )
 
     const transaction: ethers.providers.TransactionRequest = {
       data: swapParams.calldata,
