@@ -22,7 +22,7 @@ class RouterContract {
     return this.#signerOrProvider
   }
 
-  async quoteExactInputSingle(params: RouterExactInputSingleParams) {
+  async exactInputSingle(params: RouterExactInputSingleParams) {
     try {
       const payload = {
         ...params,

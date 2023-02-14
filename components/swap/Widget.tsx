@@ -1,7 +1,7 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
 import { ChangeEvent, useState } from 'react'
-import { formatUnits } from 'ethers/lib/utils'
+import { commify, formatUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
 
@@ -14,7 +14,7 @@ interface SwapWidgetProps {
 const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   const config = useChainConfig()
 
-  const { getQuoteOut, poolFactory, createTrade, executeTrade } = usePoolSwap({
+  const { getQuoteOut, poolFactory, executeTrade } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     quoterAddress: config.hubs.uniswapQuoter.address,
     routerAddress: config.hubs.uniswapRouter.address,
@@ -39,13 +39,8 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   }
 
   const handleExecuteSwap = async () => {
-    if (!quote || !amount) return
-
-    const uncheckedTrade = await createTrade(amount, quote)
-    if (!uncheckedTrade) return
-
-    const receipt = await executeTrade(uncheckedTrade)
-    console.log(receipt)
+    if (!amount) return
+    await executeTrade(amount)
   }
 
   return (
@@ -63,7 +58,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
         <input
           type='text'
           disabled
-          value={formatUnits(quote, poolFactory.tokenB.decimals)}
+          value={commify(formatUnits(quote, poolFactory.tokenB.decimals))}
         />
       </div>
       <div>

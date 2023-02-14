@@ -3,17 +3,14 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import { FeeAmount, Pool, Route, Trade } from '@uniswap/v3-sdk'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
 import useQuoterContract from './useQuoterContract'
 import { QuoteExactInputSingleParams } from '../types/quoter'
 import { parseUnits } from 'ethers/lib/utils'
-import { CurrencyAmount, TradeType } from '@uniswap/sdk-core'
-import { TokenTrade } from '../types/router'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
 import useRouterContract from './useRouterContract'
-import { DEFAULT_SWAP_DEADLINE } from '@/config/constants'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -111,55 +108,19 @@ function usePoolSwap({
         }
       )
 
-      return quoteOut ?? '0'
+      if (!quoteOut) return '0'
+
+      const quoteOutParsed = parseUnits(quoteOut, poolFactory.tokenB.decimals)
+      return quoteOutParsed.toString()
     },
     [getState, getConstants, poolFactory, quoterCall]
   )
 
-  const createTrade = useCallback(
-    async (amount: string, quote: string) => {
-      const state = await getState()
-      if (!state) return
-
-      const pool = new Pool(
-        poolFactory.tokenA,
-        poolFactory.tokenB,
-        poolFactory.fee,
-        state.sqrtPriceX96.toString(),
-        state.liquidity.toString(),
-        state.tick
-      )
-
-      const route = new Route([pool], poolFactory.tokenA, poolFactory.tokenB)
-      const amountIn = parseUnits(amount, poolFactory.tokenA.decimals)
-      const amountOut = parseUnits(quote, poolFactory.tokenB.decimals)
-
-      const uncheckedTrade = Trade.createUncheckedTrade({
-        route,
-        inputAmount: CurrencyAmount.fromRawAmount(
-          poolFactory.tokenA,
-          amountIn.toString()
-        ),
-        outputAmount: CurrencyAmount.fromRawAmount(
-          poolFactory.tokenB,
-          amountOut.toString()
-        ),
-        tradeType: TradeType.EXACT_INPUT
-      })
-
-      return uncheckedTrade
-    },
-    [poolFactory, getState]
-  )
-
-  const executeTrade = async (trade: TokenTrade) => {
+  const executeTrade = async (amount: string) => {
     const provider = wallet.provider?.instance
     if (!provider) return
 
-    const amountIn = parseUnits(
-      trade.inputAmount.toFixed(),
-      poolFactory.tokenA.decimals
-    ).toString()
+    const amountIn = parseUnits(amount, poolFactory.tokenA.decimals).toString()
 
     const isAllowanceApproved = await checkOrApproveAllowanceToQuoter(amountIn)
     if (!isAllowanceApproved) return
@@ -172,13 +133,13 @@ function usePoolSwap({
       tokenOut: constants.tokenB,
       fee: constants.fee,
       recipient: state.address,
-      deadline: DEFAULT_SWAP_DEADLINE,
+      deadline: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
       amountIn: amountIn,
       amountOutMinimum: 0,
       sqrtPriceLimitX96: 0
     }
 
-    const receipt = await routerCall('quoteExactInputSingle', params)
+    const receipt = await routerCall('exactInputSingle', params)
     return receipt
   }
 
@@ -201,7 +162,6 @@ function usePoolSwap({
     getConstants,
     getState,
     getQuoteOut,
-    createTrade,
     executeTrade
   }
 }
