@@ -8,14 +8,10 @@ import { Token } from '@/modules/core/tokens/types/token'
 import useQuoterContract from './useQuoterContract'
 import { QuoteExactInputSingleParams } from '../types/quoter'
 import { parseUnits } from 'ethers/lib/utils'
-
-import {
-  // Currency,
-  CurrencyAmount,
-  // Percent,
-  // Token,
-  TradeType
-} from '@uniswap/sdk-core'
+import { CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { TokenTrade } from '../types/router'
+import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
+import { BigNumber } from 'bignumber.js'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -45,6 +41,8 @@ function usePoolSwap({
       }),
     [tokenA, tokenB, factoryAddress, fee, state.chainId]
   )
+
+  const { call: tokenACall } = useERC20Contract({ address: tokenA.address })
 
   const { call: poolCall, contract } = usePoolContract({
     address: poolFactory?.address
@@ -113,7 +111,7 @@ function usePoolSwap({
   )
 
   const createTrade = useCallback(
-    async (amount: string) => {
+    async (amount: string, quote: string) => {
       const state = await getState()
       if (!state) return
 
@@ -128,7 +126,7 @@ function usePoolSwap({
 
       const route = new Route([pool], poolFactory.tokenA, poolFactory.tokenB)
       const amountIn = parseUnits(amount, poolFactory.tokenA.decimals)
-      const amountOut = await getQuoteOut(amount)
+      const amountOut = parseUnits(quote, poolFactory.tokenB.decimals)
 
       const uncheckedTrade = Trade.createUncheckedTrade({
         route,
@@ -145,10 +143,33 @@ function usePoolSwap({
 
       return uncheckedTrade
     },
-    [poolFactory, getState, getQuoteOut]
+    [poolFactory, getState]
   )
 
-  return { poolFactory, getConstants, getState, getQuoteOut, createTrade }
+  const executeTrade = async (trade: TokenTrade) => {
+    const amountIn = new BigNumber(trade.inputAmount.toFixed())
+
+    const allowanceToApprove = parseUnits(
+      amountIn.toString(),
+      poolFactory.tokenA.decimals
+    )
+
+    await approveTokenAAllowance(allowanceToApprove.toString())
+  }
+
+  const approveTokenAAllowance = async (amount: string) => {
+    const approved = await tokenACall('approve', quoterAddress, amount)
+    return approved
+  }
+
+  return {
+    poolFactory,
+    getConstants,
+    getState,
+    getQuoteOut,
+    createTrade,
+    executeTrade
+  }
 }
 
 export default usePoolSwap
