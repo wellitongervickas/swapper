@@ -19,7 +19,7 @@ function useSwapperToken() {
         setBalance(balance)
       }
     })()
-  }, [call, state.address])
+  }, [call, state.address, state.chainId])
 
   return {
     ...config.tokens.SWPR,

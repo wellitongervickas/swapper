@@ -51,11 +51,6 @@ class ERC20Contract {
       const gasLimit = await GenericContract.getGasLimit(estimate)
       const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
 
-      console.log({
-        gasLimit,
-        gasPrice
-      })
-
       const transaction = (await this.#contract.approve(...payload, {
         gasLimit,
         gasPrice
