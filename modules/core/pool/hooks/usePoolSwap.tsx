@@ -3,11 +3,19 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import { FeeAmount } from '@uniswap/v3-sdk'
+import { FeeAmount, Pool, Route, Trade } from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
 import useQuoterContract from './useQuoterContract'
 import { QuoteExactInputSingleParams } from '../types/quoter'
 import { parseUnits } from 'ethers/lib/utils'
+
+import {
+  // Currency,
+  CurrencyAmount,
+  // Percent,
+  // Token,
+  TradeType
+} from '@uniswap/sdk-core'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -41,6 +49,7 @@ function usePoolSwap({
   const { call: poolCall, contract } = usePoolContract({
     address: poolFactory?.address
   })
+
   const { call: quoterCall } = useQuoterContract({ address: quoterAddress })
 
   const getConstants = useCallback(async (): Promise<
@@ -103,7 +112,43 @@ function usePoolSwap({
     [getState, getConstants, poolFactory, quoterCall]
   )
 
-  return { poolFactory, getConstants, getState, getQuoteOut }
+  const createTrade = useCallback(
+    async (amount: string) => {
+      const state = await getState()
+      if (!state) return
+
+      const pool = new Pool(
+        poolFactory.tokenA,
+        poolFactory.tokenB,
+        poolFactory.fee,
+        state.sqrtPriceX96.toString(),
+        state.liquidity.toString(),
+        state.tick
+      )
+
+      const route = new Route([pool], poolFactory.tokenA, poolFactory.tokenB)
+      const amountIn = parseUnits(amount, poolFactory.tokenA.decimals)
+      const amountOut = await getQuoteOut(amount)
+
+      const uncheckedTrade = Trade.createUncheckedTrade({
+        route,
+        inputAmount: CurrencyAmount.fromRawAmount(
+          poolFactory.tokenA,
+          amountIn.toString()
+        ),
+        outputAmount: CurrencyAmount.fromRawAmount(
+          poolFactory.tokenB,
+          amountOut.toString()
+        ),
+        tradeType: TradeType.EXACT_INPUT
+      })
+
+      return uncheckedTrade
+    },
+    [poolFactory, getState, getQuoteOut]
+  )
+
+  return { poolFactory, getConstants, getState, getQuoteOut, createTrade }
 }
 
 export default usePoolSwap

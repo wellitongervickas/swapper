@@ -6,7 +6,7 @@ import { formatUnits } from 'ethers/lib/utils'
 const SwapDetails = () => {
   const config = useChainConfig()
 
-  const { getQuoteOut, poolFactory } = usePoolSwap({
+  const { getQuoteOut, poolFactory, createTrade } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     quoterAddress: config.hubs.uniswapQuoter.address,
     tokenA: config.tokens.WETH,
@@ -26,6 +26,12 @@ const SwapDetails = () => {
     handleGetQuote(event.target.value)
   }
 
+  const handleExecuteSwap = async () => {
+    if (!quote) return
+    const trade = await createTrade(quote)
+    console.log(trade)
+  }
+
   return (
     <div>
       <div className='flex flex-col'>
@@ -43,6 +49,9 @@ const SwapDetails = () => {
           disabled
           value={formatUnits(quote, poolFactory.tokenB.decimals)}
         />
+      </div>
+      <div>
+        <button onClick={handleExecuteSwap}>Execute</button>
       </div>
     </div>
   )
