@@ -179,15 +179,6 @@ function usePoolSwap({
   }
 
   const checkOrApproveAllowanceToQuoter = async (amount: string) => {
-    const allowance = await tokenACall(
-      'allowance',
-      state.address,
-      quoterAddress
-    )
-
-    const allowanceBN = new BigNumber(allowance)
-    if (allowanceBN.gte(amount)) return true
-
     const approved = await tokenACall('approve', quoterAddress, amount)
     return approved
   }
