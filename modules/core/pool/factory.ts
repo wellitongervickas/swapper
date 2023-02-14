@@ -1,6 +1,8 @@
 import { PoolFactoryConstructor } from './types/factory'
 import { computePoolAddress, FeeAmount } from '@uniswap/v3-sdk'
 import { Token } from '@uniswap/sdk-core'
+import { Token as IToken } from '@/modules/core/tokens/types/token'
+
 export class PoolFactory {
   chainId: number
   factoryAddress: string
@@ -13,17 +15,8 @@ export class PoolFactory {
     this.factoryAddress = params.factoryAddress
     this.fee = params.fee
 
-    this.tokenA = new Token(
-      params.chainId,
-      params.tokenA.address,
-      params.tokenA.decimals
-    )
-
-    this.tokenB = new Token(
-      params.chainId,
-      params.tokenB.address,
-      params.tokenB.decimals
-    )
+    this.tokenA = PoolFactory.buildToken(params.chainId, params.tokenA)
+    this.tokenB = PoolFactory.buildToken(params.chainId, params.tokenB)
   }
 
   get address() {
@@ -33,5 +26,9 @@ export class PoolFactory {
       tokenB: this.tokenB,
       fee: this.fee
     })
+  }
+
+  static buildToken(chainId: number, token: IToken) {
+    return new Token(chainId, token.address, token.decimals)
   }
 }

@@ -3,14 +3,7 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import {
-  FeeAmount,
-  Pool,
-  Route,
-  Trade,
-  SwapOptions,
-  SwapRouter
-} from '@uniswap/v3-sdk'
+import { FeeAmount, Pool, Route, Trade, SwapRouter } from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
 import useQuoterContract from './useQuoterContract'
 import { QuoteExactInputSingleParams } from '../types/quoter'
@@ -169,26 +162,24 @@ function usePoolSwap({
     const isAllowanceApproved = await checkOrApproveAllowanceToQuoter(amountIn)
     if (!isAllowanceApproved) return
 
-    const options: SwapOptions = {
+    const swapParams = SwapRouter.swapCallParameters([trade], {
       slippageTolerance: new Percent(300, 10000), // 0.3%
       deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
       recipient: state.address
-    }
+    })
 
-    const methodParameters = SwapRouter.swapCallParameters([trade], options)
     const estimate = await GenericContract.getGasLimit(DEFAULT_GAS_LIMIT)
 
     const transaction: ethers.providers.TransactionRequest = {
-      data: methodParameters.calldata,
+      data: swapParams.calldata,
       to: routerAddress,
-      value: methodParameters.value,
+      value: swapParams.value,
       from: state.address,
       maxFeePerGas: estimate,
       maxPriorityFeePerGas: estimate
     }
 
     const receipt = await provider.send('eth_sendTransaction', [transaction])
-
     return receipt
   }
 
