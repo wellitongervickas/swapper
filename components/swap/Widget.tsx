@@ -2,17 +2,25 @@ import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
 import { ChangeEvent, useState } from 'react'
 import { formatUnits } from 'ethers/lib/utils'
+import { Token } from '@/modules/core/tokens/types/token'
+import { FeeAmount } from '@uniswap/v3-sdk'
 
-const SwapDetails = () => {
+interface SwapWidgetProps {
+  tokenA: Token
+  tokenB: Token
+  fee: keyof typeof FeeAmount
+}
+
+const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   const config = useChainConfig()
 
   const { getQuoteOut, poolFactory, createTrade, executeTrade } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     quoterAddress: config.hubs.uniswapQuoter.address,
     routerAddress: config.hubs.uniswapRouter.address,
-    tokenA: config.tokens.WETH,
-    tokenB: config.tokens.SWPR,
-    fee: 'MEDIUM'
+    fee,
+    tokenA,
+    tokenB
   })
 
   const [quote, setQuote] = useState('0')
@@ -43,7 +51,7 @@ const SwapDetails = () => {
   return (
     <div>
       <div className='flex flex-col'>
-        ETH amount
+        {tokenA.symbol} amount
         <input
           type='number'
           onChange={handleChangeTokenIn}
@@ -51,7 +59,7 @@ const SwapDetails = () => {
         />
       </div>
       <div className='flex flex-col'>
-        SWPR amount
+        {tokenB.symbol} amount
         <input
           type='text'
           disabled
@@ -65,4 +73,4 @@ const SwapDetails = () => {
   )
 }
 
-export default SwapDetails
+export default SwapWidget
