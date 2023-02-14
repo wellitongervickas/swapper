@@ -3,19 +3,29 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import { FeeAmount, Pool, Route, Trade } from '@uniswap/v3-sdk'
+import {
+  FeeAmount,
+  Pool,
+  Route,
+  Trade,
+  SwapOptions,
+  SwapRouter
+} from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
 import useQuoterContract from './useQuoterContract'
 import { QuoteExactInputSingleParams } from '../types/quoter'
 import { parseUnits } from 'ethers/lib/utils'
-import { CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core'
 import { TokenTrade } from '../types/router'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
+import GenericContract, { DEFAULT_GAS_LIMIT } from '../../contracts/Generic'
+import { ethers } from 'ethers'
 
 interface UsePoolSwapProps {
   factoryAddress: string
   quoterAddress: string
+  routerAddress: string
   tokenA: Token
   tokenB: Token
   fee: keyof typeof FeeAmount
@@ -24,11 +34,12 @@ interface UsePoolSwapProps {
 function usePoolSwap({
   tokenA,
   tokenB,
+  fee,
   factoryAddress,
   quoterAddress,
-  fee
+  routerAddress
 }: UsePoolSwapProps) {
-  const { state } = useWallet()
+  const { state, wallet } = useWallet()
 
   const poolFactory = useMemo(
     () =>
@@ -147,17 +158,50 @@ function usePoolSwap({
   )
 
   const executeTrade = async (trade: TokenTrade) => {
-    const amountIn = new BigNumber(trade.inputAmount.toFixed())
+    const provider = wallet.provider?.instance
+    if (!provider) return
 
-    const allowanceToApprove = parseUnits(
-      amountIn.toString(),
+    const amountIn = new BigNumber(
+      trade.inputAmount.toFixed(),
       poolFactory.tokenA.decimals
-    )
+    ).toString()
 
-    await approveTokenAAllowance(allowanceToApprove.toString())
+    const isAllowanceApproved = await checkOrApproveAllowanceToQuoter(amountIn)
+    if (!isAllowanceApproved) return
+
+    const options: SwapOptions = {
+      slippageTolerance: new Percent(300, 10000), // 0.3%
+      deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
+      recipient: state.address
+    }
+
+    const methodParameters = SwapRouter.swapCallParameters([trade], options)
+    const estimate = await GenericContract.getGasLimit(DEFAULT_GAS_LIMIT)
+
+    const transaction: ethers.providers.TransactionRequest = {
+      data: methodParameters.calldata,
+      to: routerAddress,
+      value: methodParameters.value,
+      from: state.address,
+      maxFeePerGas: estimate,
+      maxPriorityFeePerGas: estimate
+    }
+
+    const receipt = await provider.send('eth_sendTransaction', [transaction])
+
+    return receipt
   }
 
-  const approveTokenAAllowance = async (amount: string) => {
+  const checkOrApproveAllowanceToQuoter = async (amount: string) => {
+    const allowance = await tokenACall(
+      'allowance',
+      state.address,
+      quoterAddress
+    )
+
+    const allowanceBN = new BigNumber(allowance)
+    if (allowanceBN.gte(amount)) return true
+
     const approved = await tokenACall('approve', quoterAddress, amount)
     return approved
   }

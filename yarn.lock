@@ -682,7 +682,7 @@
   resolved "https://registry.yarnpkg.com/@uniswap/lib/-/lib-4.0.1-alpha.tgz#2881008e55f075344675b3bca93f020b028fbd02"
   integrity sha512-f6UIliwBbRsgVLxIaBANF6w09tYqc6Y/qXdsrbEmXHyFA7ILiKrIwRFXe1yOg8M3cksgVsO9N7yuL2DdCGQKBA==
 
-"@uniswap/sdk-core@^3.0.1":
+"@uniswap/sdk-core@^3.0.1", "@uniswap/sdk-core@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@uniswap/sdk-core/-/sdk-core-3.1.1.tgz#3ab3376ce8df49fe46018d913c2a92d4736a3479"
   integrity sha512-afXn3R2ICf1mAZU+Ug8MmPbuXG7PYjoUYr0+sKLApyOPuhlxpwV4tR4ba8w4jSXoFhqOWxZ9qh44isWoScK96w==
@@ -728,7 +728,7 @@
     base64-sol "1.0.1"
     hardhat-watcher "^2.1.1"
 
-"@uniswap/v3-periphery@^1.0.1", "@uniswap/v3-periphery@^1.1.1":
+"@uniswap/v3-periphery@^1.0.1", "@uniswap/v3-periphery@^1.1.1", "@uniswap/v3-periphery@^1.4.3":
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/@uniswap/v3-periphery/-/v3-periphery-1.4.3.tgz#a6da4632dbd46b139cc13a410e4ec09ad22bd19f"
   integrity sha512-80c+wtVzl5JJT8UQskxVYYG3oZb4pkhY0zDe0ab/RX4+8f9+W5d8wI4BT0wLB0wFQTSnbW+QdBSpkHA/vRyGBA==

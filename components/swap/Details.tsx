@@ -9,6 +9,7 @@ const SwapDetails = () => {
   const { getQuoteOut, poolFactory, createTrade, executeTrade } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     quoterAddress: config.hubs.uniswapQuoter.address,
+    routerAddress: config.hubs.uniswapRouter.address,
     tokenA: config.tokens.WETH,
     tokenB: config.tokens.SWPR,
     fee: 'MEDIUM'
@@ -35,7 +36,8 @@ const SwapDetails = () => {
     const uncheckedTrade = await createTrade(amount, quote)
     if (!uncheckedTrade) return
 
-    executeTrade(uncheckedTrade)
+    const receipt = await executeTrade(uncheckedTrade)
+    console.log(receipt)
   }
 
   return (
