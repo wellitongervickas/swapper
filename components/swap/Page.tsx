@@ -1,4 +1,4 @@
-import { InfoWalletDetails } from '@/components/info/WalletDetails'
+import { WalletBalances } from '@/components/wallet/Balances'
 import SwapWidget from './Widget'
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import { DEFAULT_SWAP_FEE } from '@/config/constants'
@@ -8,18 +8,19 @@ const SwapPage = () => {
 
   return (
     <div>
-      <InfoWalletDetails />
-      <SwapWidget
-        fee={DEFAULT_SWAP_FEE}
-        tokenA={config.tokens.SWPR}
-        tokenB={config.tokens.WETH}
-      />
-      <br />
-      <SwapWidget
-        fee={DEFAULT_SWAP_FEE}
-        tokenA={config.tokens.WETH}
-        tokenB={config.tokens.SWPR}
-      />
+      <WalletBalances />
+      <div className='flex space-x-2'>
+        <SwapWidget
+          fee={DEFAULT_SWAP_FEE}
+          tokenA={config.tokens.SWPR}
+          tokenB={config.tokens.WETH}
+        />
+        <SwapWidget
+          fee={DEFAULT_SWAP_FEE}
+          tokenA={config.tokens.WETH}
+          tokenB={config.tokens.SWPR}
+        />
+      </div>
     </div>
   )
 }

@@ -48,8 +48,6 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
     console.log(receipt)
   }
 
-  console.log(quote)
-
   return (
     <div>
       <div className='flex flex-col'>
