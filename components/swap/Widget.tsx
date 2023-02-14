@@ -24,7 +24,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   })
 
   const [quote, setQuote] = useState('0')
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState('0')
 
   const handleGetQuote = (amount: string) => {
     if (!amount || +amount < 0) return
@@ -47,6 +47,8 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
     const receipt = await executeTrade(uncheckedTrade)
     console.log(receipt)
   }
+
+  console.log(quote)
 
   return (
     <div>

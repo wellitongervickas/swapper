@@ -13,6 +13,7 @@ import { TokenTrade } from '../types/router'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
 import useRouterContract from './useRouterContract'
+import { DEFAULT_SWAP_DEADLINE } from '@/config/constants'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -171,7 +172,7 @@ function usePoolSwap({
       tokenOut: constants.tokenB,
       fee: constants.fee,
       recipient: state.address,
-      deadline: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
+      deadline: DEFAULT_SWAP_DEADLINE,
       amountIn: amountIn,
       amountOutMinimum: 0,
       sqrtPriceLimitX96: 0
