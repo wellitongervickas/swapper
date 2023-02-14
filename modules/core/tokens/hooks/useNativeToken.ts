@@ -6,7 +6,7 @@ function useNativeToken() {
   const config = useChainConfig()
 
   return {
-    ...config.tokens.WETH,
+    ...config.tokens.NATIVE,
     balance: state.balance
   }
 }

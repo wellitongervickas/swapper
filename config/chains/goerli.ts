@@ -17,6 +17,12 @@ goerli.addHub({
 })
 
 goerli.addToken({
+  NATIVE: {
+    name: 'ETH',
+    symbol: 'ETH',
+    address: '0x0000000000000000000000000000000000000000',
+    decimals: 18
+  },
   WETH: {
     name: 'Wrapper Ethers',
     symbol: 'WETH',

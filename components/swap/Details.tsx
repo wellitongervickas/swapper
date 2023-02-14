@@ -6,7 +6,7 @@ import { formatUnits } from 'ethers/lib/utils'
 const SwapDetails = () => {
   const config = useChainConfig()
 
-  const { getQuoteOut, poolFactory, createTrade } = usePoolSwap({
+  const { getQuoteOut, poolFactory, createTrade, executeTrade } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     quoterAddress: config.hubs.uniswapQuoter.address,
     tokenA: config.tokens.WETH,
@@ -15,21 +15,27 @@ const SwapDetails = () => {
   })
 
   const [quote, setQuote] = useState('0')
+  const [amount, setAmount] = useState('')
 
-  const handleGetQuote = async (amount: string) => {
+  const handleGetQuote = (amount: string) => {
     if (!amount || +amount < 0) return
-    const quoted = await getQuoteOut(amount)
-    setQuote(quoted)
+    getQuoteOut(amount).then(setQuote)
   }
 
   const handleChangeTokenIn = (event: ChangeEvent<HTMLInputElement>) => {
-    handleGetQuote(event.target.value)
+    const value = event.target.value
+
+    setAmount(value)
+    handleGetQuote(value)
   }
 
   const handleExecuteSwap = async () => {
-    if (!quote) return
-    const trade = await createTrade(quote)
-    console.log(trade)
+    if (!quote || !amount) return
+
+    const uncheckedTrade = await createTrade(amount, quote)
+    if (!uncheckedTrade) return
+
+    executeTrade(uncheckedTrade)
   }
 
   return (
