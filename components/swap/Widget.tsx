@@ -1,7 +1,7 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
 import { ChangeEvent, useState } from 'react'
-import { commify, formatUnits } from 'ethers/lib/utils'
+import { formatUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
 
@@ -58,7 +58,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
         <input
           type='text'
           disabled
-          value={commify(formatUnits(quote, poolFactory.tokenB.decimals))}
+          value={formatUnits(quote, poolFactory.tokenB.decimals)}
         />
       </div>
       <div>

@@ -12,13 +12,13 @@ const SwapPage = () => {
       <div className='flex space-x-2'>
         <SwapWidget
           fee={DEFAULT_SWAP_FEE}
-          tokenA={config.tokens.SWPR}
-          tokenB={config.tokens.WETH}
+          tokenA={config.tokens.WETH}
+          tokenB={config.tokens.SWPR}
         />
         <SwapWidget
           fee={DEFAULT_SWAP_FEE}
-          tokenA={config.tokens.WETH}
-          tokenB={config.tokens.SWPR}
+          tokenA={config.tokens.SWPR}
+          tokenB={config.tokens.WETH}
         />
       </div>
     </div>

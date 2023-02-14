@@ -1,8 +1,6 @@
-import { ethers } from 'ethers'
-
 export type QuoteExactInputSingleParams = {
-  token0: string
-  token1: string
+  tokenIn: string
+  tokenOut: string
   fee: number
-  amount: ethers.BigNumber
+  amount: string
 }

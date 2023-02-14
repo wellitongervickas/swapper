@@ -20,12 +20,13 @@ class QuoterContract {
   ): Promise<string> {
     try {
       const payload = [
-        params.token0,
-        params.token1,
+        params.tokenIn,
+        params.tokenOut,
         params.fee,
         params.amount,
         0 // sqrtPriceLimitX96
       ]
+
       const quotedAmountOut =
         await this.#contract.callStatic.quoteExactInputSingle(...payload)
 

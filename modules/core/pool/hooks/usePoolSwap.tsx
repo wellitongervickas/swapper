@@ -101,17 +101,14 @@ function usePoolSwap({
       const quoteOut = await quoterCall<QuoteExactInputSingleParams, string>(
         'quoteExactInputSingle',
         {
-          token0: constants.tokenA,
-          token1: constants.tokenB,
+          tokenIn: constants.tokenA,
+          tokenOut: constants.tokenB,
           fee: constants.fee,
-          amount: amountIn
+          amount: amountIn.toString()
         }
       )
 
-      if (!quoteOut) return '0'
-
-      const quoteOutParsed = parseUnits(quoteOut, poolFactory.tokenB.decimals)
-      return quoteOutParsed.toString()
+      return quoteOut || '0'
     },
     [getState, getConstants, poolFactory, quoterCall]
   )
@@ -122,7 +119,7 @@ function usePoolSwap({
 
     const amountIn = parseUnits(amount, poolFactory.tokenA.decimals).toString()
 
-    const isAllowanceApproved = await checkOrApproveAllowanceToQuoter(amountIn)
+    const isAllowanceApproved = await checkAllowanceApproval(amountIn)
     if (!isAllowanceApproved) return
 
     const constants = await getConstants()
@@ -143,7 +140,7 @@ function usePoolSwap({
     return receipt
   }
 
-  const checkOrApproveAllowanceToQuoter = async (amount: string) => {
+  const checkAllowanceApproval = async (amount: string) => {
     const allowance = await tokenACall(
       'allowance',
       state.address,
