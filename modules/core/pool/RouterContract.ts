@@ -54,8 +54,6 @@ class RouterContract {
         error,
         true
       )
-
-      return '0'
     }
   }
 }
