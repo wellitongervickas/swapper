@@ -3,16 +3,16 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants, PoolInfo } from '../types/factory'
 import usePoolContract from './usePoolContract'
-import { FeeAmount, Pool, Route, Trade, SwapRouter } from '@uniswap/v3-sdk'
+import { FeeAmount, Pool, Route, Trade } from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
 import useQuoterContract from './useQuoterContract'
 import { QuoteExactInputSingleParams } from '../types/quoter'
 import { parseUnits } from 'ethers/lib/utils'
-import { CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import { TokenTrade } from '../types/router'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
-import { ethers } from 'ethers'
+import useRouterContract from './useRouterContract'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -52,6 +52,8 @@ function usePoolSwap({
   })
 
   const { call: quoterCall } = useQuoterContract({ address: quoterAddress })
+
+  const { call: routerCall } = useRouterContract({ address: routerAddress })
 
   const getConstants = useCallback(async (): Promise<
     PoolConstants | undefined
@@ -153,7 +155,7 @@ function usePoolSwap({
     const provider = wallet.provider?.instance
     if (!provider) return
 
-    const amountIn = new BigNumber(
+    const amountIn = parseUnits(
       trade.inputAmount.toFixed(),
       poolFactory.tokenA.decimals
     ).toString()
@@ -161,25 +163,35 @@ function usePoolSwap({
     const isAllowanceApproved = await checkOrApproveAllowanceToQuoter(amountIn)
     if (!isAllowanceApproved) return
 
-    const swapParams = SwapRouter.swapCallParameters([trade], {
-      slippageTolerance: new Percent(300, 10000), // 0.3%
-      deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
-      recipient: state.address
-    })
+    const constants = await getConstants()
+    if (!constants) return
 
-    const transaction: ethers.providers.TransactionRequest = {
-      data: swapParams.calldata,
-      to: routerAddress,
-      value: swapParams.value,
-      from: state.address
+    const params = {
+      tokenIn: constants.tokenA,
+      tokenOut: constants.tokenB,
+      fee: constants.fee,
+      recipient: state.address,
+      deadline: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
+      amountIn: amountIn,
+      amountOutMinimum: 0,
+      sqrtPriceLimitX96: 0
     }
 
-    const receipt = await provider.send('eth_sendTransaction', [transaction])
+    const receipt = await routerCall('quoteExactInputSingle', params)
     return receipt
   }
 
   const checkOrApproveAllowanceToQuoter = async (amount: string) => {
-    const approved = await tokenACall('approve', quoterAddress, amount)
+    const allowance = await tokenACall(
+      'allowance',
+      state.address,
+      routerAddress
+    )
+
+    const allowanceBN = new BigNumber(allowance)
+    if (allowanceBN.gte(amount)) return true
+
+    const approved = await tokenACall('approve', routerAddress, amount)
     return approved
   }
 
