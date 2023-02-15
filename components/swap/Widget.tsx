@@ -1,7 +1,7 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
 import { ChangeEvent, ComponentProps, useEffect, useState } from 'react'
-import { formatUnits } from 'ethers/lib/utils'
+import { commify, formatUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import CardDefault from '@/components/shared/card/Default'
@@ -9,6 +9,7 @@ import Button from '@/components/shared/form/Button'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import SwapSwitch from './Switcher'
 import classnames from '@/modules/utils/classnames'
+import Input from '../shared/form/Input'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -90,6 +91,7 @@ const SwapWidget = ({
     >
       <div className='flex'>
         <SwapSwitch
+          disabled={!state.connected}
           activeToken={tokens[0]}
           tokenA={tokenA}
           tokenB={tokenB}
@@ -99,7 +101,7 @@ const SwapWidget = ({
       <div className='flex flex-col space-y-4'>
         <div className='flex flex-col'>
           {tokens[0].symbol} amount
-          <input
+          <Input
             key={tokens[0].address}
             id={tokens[0].address}
             type='number'
@@ -107,23 +109,11 @@ const SwapWidget = ({
             value={amount}
             disabled={!state.connected}
           />
-          {tokens[0].native && (
-            <div>
-              <input id='useNative' type='checkbox' />
-              <label htmlFor='useNative'>Use native balance</label>
-            </div>
-          )}
         </div>
-        <div className='flex flex-col'>
-          {tokens[1].symbol} amount
-          <input
-            key={tokens[1].address}
-            id={tokens[1].address}
-            type='number'
-            disabled
-            value={formatUnits(quote, tokens[1].decimals)}
-          />
-        </div>
+        <section className='flex flex-col'>
+          <h3>{tokens[1].symbol} amount</h3>
+          <div>{commify(formatUnits(quote, tokens[1].decimals))}</div>
+        </section>
         <div>
           <Button onClick={handleExecuteSwap} disabled={!state.connected}>
             Execute
