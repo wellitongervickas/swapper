@@ -6,15 +6,13 @@ const Homepagecontainer = () => {
   const config = useChainConfig()
 
   return (
-    <div className='flex  items-center justify-center space-y-4'>
-      <div>
-        <SwapWidget
-          className='min-w-[24rem]'
-          fee={DEFAULT_SWAP_FEE}
-          tokenA={config.tokens.WETH}
-          tokenB={config.tokens.SWPR}
-        />
-      </div>
+    <div className='flex justify-center'>
+      <SwapWidget
+        className='w-full md:w-auto md:min-w-[24rem]'
+        fee={DEFAULT_SWAP_FEE}
+        tokenA={config.tokens.WETH}
+        tokenB={config.tokens.SWPR}
+      />
     </div>
   )
 }
