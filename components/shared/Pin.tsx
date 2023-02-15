@@ -12,7 +12,7 @@ const Pin = ({ maxPins, className, pinsClassName }: PinProps) => {
   const pins = Array.from({ length: maxPins || 4 })
 
   const styles = classnames.merge([
-    pinsClassName || 'bg-gray-500',
+    pinsClassName || 'bg-gray-900',
     'animated-ping h-2 w-2 rounded-full'
   ])
 

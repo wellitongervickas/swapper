@@ -48,7 +48,7 @@ const Button = ({
       ])}
     >
       {loading && <Pin maxPins={1} />}
-      {children}
+      <span>{children}</span>
     </button>
   )
 }

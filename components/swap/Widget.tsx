@@ -10,6 +10,7 @@ import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import SwapSwitch from './Switcher'
 import classnames from '@/modules/utils/classnames'
 import Input from '../shared/form/Input'
+import Pin from '../shared/Pin'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -29,14 +30,15 @@ const SwapWidget = ({
 
   const [tokens, setTokens] = useState<Token[]>([tokenA, tokenB])
 
-  const { getQuoteOut, poolFactory, executeTrade } = usePoolSwap({
-    factoryAddress: config.hubs.uniswapFactory.address,
-    quoterAddress: config.hubs.uniswapQuoter.address,
-    routerAddress: config.hubs.uniswapRouter.address,
-    fee,
-    tokenA: tokens[0],
-    tokenB: tokens[1]
-  })
+  const { getQuoteOut, poolFactory, executeTrade, loading, isQuoting } =
+    usePoolSwap({
+      factoryAddress: config.hubs.uniswapFactory.address,
+      quoterAddress: config.hubs.uniswapQuoter.address,
+      routerAddress: config.hubs.uniswapRouter.address,
+      fee,
+      tokenA: tokens[0],
+      tokenB: tokens[1]
+    })
 
   const [quote, setQuote] = useState('0')
   const [amount, setAmount] = useState('0')
@@ -112,10 +114,20 @@ const SwapWidget = ({
         </div>
         <section className='flex flex-col'>
           <h3>{tokens[1].symbol} amount</h3>
-          <div>{commify(formatUnits(quote, tokens[1].decimals))}</div>
+          {isQuoting ? (
+            <div className='max-w-[4rem] pt-2'>
+              <Pin pinsClassName='bg-gray' />
+            </div>
+          ) : (
+            <div>{commify(formatUnits(quote, tokens[1].decimals))}</div>
+          )}
         </section>
         <div>
-          <Button onClick={handleExecuteSwap} disabled={!state.connected}>
+          <Button
+            loading={loading}
+            onClick={handleExecuteSwap}
+            disabled={loading || !state.connected}
+          >
             Execute
           </Button>
         </div>

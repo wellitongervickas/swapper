@@ -44,15 +44,25 @@ function usePoolSwap({
     [tokenA, tokenB, factoryAddress, fee, state.chainId]
   )
 
-  const { call: tokenACall } = useERC20Contract({ address: tokenA.address })
+  const { call: tokenACall, loading: tokenALoading } = useERC20Contract({
+    address: tokenA.address
+  })
 
-  const { call: poolCall, contract } = usePoolContract({
+  const {
+    call: poolCall,
+    contract,
+    loading: poolLoading
+  } = usePoolContract({
     address: poolFactory?.address
   })
 
-  const { call: quoterCall } = useQuoterContract({ address: quoterAddress })
+  const { call: quoterCall, loading: quoterLoading } = useQuoterContract({
+    address: quoterAddress
+  })
 
-  const { call: routerCall } = useRouterContract({ address: routerAddress })
+  const { call: routerCall, loading: routerLoading } = useRouterContract({
+    address: routerAddress
+  })
 
   const getConstants = useCallback(async (): Promise<
     PoolConstants | undefined
@@ -133,6 +143,8 @@ function usePoolSwap({
   }
 
   return {
+    loading: tokenALoading || poolLoading || quoterLoading || routerLoading,
+    isQuoting: quoterLoading,
     poolFactory,
     getConstants,
     getQuoteOut,
