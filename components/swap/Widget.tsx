@@ -1,6 +1,6 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { formatUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
@@ -26,6 +26,11 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   const [quote, setQuote] = useState('0')
   const [amount, setAmount] = useState('0')
 
+  const handleResetFields = () => {
+    setQuote('0')
+    setAmount('0')
+  }
+
   const handleGetQuote = (amount: string) => {
     if (!amount || +amount < 0) return
     getQuoteOut(amount).then(setQuote)
@@ -40,14 +45,25 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
 
   const handleExecuteSwap = async () => {
     if (!amount) return
-    await executeTrade(amount)
+    const receipt = await executeTrade(amount)
+
+    if (receipt) {
+      handleResetFields()
+    }
   }
+
+  useEffect(() => {
+    if (poolFactory.tokenA.address !== tokenB.address) {
+      handleResetFields()
+    }
+  }, [poolFactory.tokenA.address, tokenB.address])
 
   return (
     <div>
       <div className='flex flex-col'>
         {tokenA.symbol} amount
         <input
+          key={tokenA.address}
           id={tokenA.address}
           type='number'
           onChange={handleChangeTokenIn}
@@ -57,6 +73,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
       <div className='flex flex-col'>
         {tokenB.symbol} amount
         <input
+          key={tokenB.address}
           id={tokenB.address}
           type='text'
           disabled
