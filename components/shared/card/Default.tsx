@@ -9,7 +9,7 @@ const CardDefault = ({ children, className, ...props }: CardDefaultProps) => (
   <div
     className={classnames.merge([
       className,
-      'rounded-md bg-gradient-to-t from-gray-900 to-stone-600 p-4',
+      'rounded-md bg-gray-900 p-4',
       'shadow-md'
     ])}
     {...props}

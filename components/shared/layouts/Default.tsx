@@ -8,9 +8,7 @@ interface LayoutDefaultProps extends ComponentProps<'div'> {
 export const LayoutDefault = ({ children, ...props }: LayoutDefaultProps) => {
   return (
     <div {...props}>
-      <div className='mb-4 bg-gray-900/50'>
-        <Header />
-      </div>
+      <Header />
       <main className='container'>{children}</main>
     </div>
   )
