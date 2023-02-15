@@ -9,8 +9,10 @@ interface LayoutDefaultProps extends ComponentProps<'div'> {
 export const LayoutDefault = ({ children, ...props }: LayoutDefaultProps) => {
   return (
     <div {...props}>
-      <Header />
-      <WalletBar />
+      <div className='mb-4 bg-gray-900/50'>
+        <Header />
+        <WalletBar />
+      </div>
       <main className='container'>{children}</main>
     </div>
   )

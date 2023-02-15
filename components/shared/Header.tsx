@@ -3,7 +3,7 @@ import Logo from './Logo'
 
 const Header = () => {
   return (
-    <header className='flex items-center justify-between p-4 container'>
+    <header className='flex items-center justify-between p-4 shadow-lg container'>
       <Logo />
       <div>
         <WalletConnect />

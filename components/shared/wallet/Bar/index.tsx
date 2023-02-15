@@ -46,8 +46,7 @@ const WalletBar = ({ className }: WalletBarProps) => {
         state.connecting ? 'opacity-0' : 'opacity-100',
         { 'h-0': isHandlingConnection },
         { 'h-[9rem]': !isHandlingConnection || isConnectedInWrongNetwork },
-        `relative overflow-hidden`,
-        'transition-all duration-300'
+        'relative overflow-hidden border-t border-gray-900/50 transition-all duration-300'
       ])}
     >
       <div className='flex flex-col items-center justify-center container'>
