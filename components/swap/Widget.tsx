@@ -1,10 +1,11 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
 import { ChangeEvent, ComponentProps, useEffect, useState } from 'react'
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { formatUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import CardDefault from '../shared/card/Default'
+import useWallet from '@/modules/core/wallet/hooks/useWallet'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -21,6 +22,7 @@ const SwapWidget = ({
   onSwitch
 }: SwapWidgetProps) => {
   const config = useChainConfig()
+  const { state } = useWallet()
 
   const { getQuoteOut, poolFactory, executeTrade } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
@@ -84,6 +86,7 @@ const SwapWidget = ({
           type='number'
           onChange={handleChangeTokenA}
           value={amount}
+          disabled={!state.connected}
         />
       </div>
       <div className='flex flex-col'>
@@ -97,7 +100,9 @@ const SwapWidget = ({
         />
       </div>
       <div>
-        <button onClick={handleExecuteSwap}>Execute</button>
+        <button onClick={handleExecuteSwap} disabled={!state.connected}>
+          Execute
+        </button>
       </div>
     </CardDefault>
   )
