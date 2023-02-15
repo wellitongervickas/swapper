@@ -3,4 +3,5 @@ export type Token = {
   symbol: string
   decimals: number
   name: string
+  native?: boolean
 }

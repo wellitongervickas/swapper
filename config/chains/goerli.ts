@@ -24,13 +24,15 @@ goerli.addToken({
     name: 'ETH',
     symbol: 'ETH',
     address: '0x0000000000000000000000000000000000000000',
-    decimals: 18
+    decimals: 18,
+    native: true
   },
   WETH: {
     name: 'Wrapper Ethers',
     symbol: 'WETH',
     address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-    decimals: 18
+    decimals: 18,
+    native: true
   },
   SWPR: {
     name: 'Swapper Coin',
