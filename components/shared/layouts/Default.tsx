@@ -1,26 +1,17 @@
-import { ReactNode } from 'react'
-import classnames from '@/modules/utils/classnames'
+import { ComponentProps, ReactNode } from 'react'
 import Header from '@/components/shared/Header'
 import WalletBar from '../wallet/Bar'
 
-interface LayoutDefaultProps {
+interface LayoutDefaultProps extends ComponentProps<'div'> {
   children: ReactNode
-  className?: string
 }
 
-export const LayoutDefault = ({ children, className }: LayoutDefaultProps) => {
+export const LayoutDefault = ({ children }: LayoutDefaultProps) => {
   return (
-    <div
-      className={classnames.merge([
-        className,
-        'tracking-wide text-neutral-200'
-      ])}
-    >
+    <div>
       <Header />
       <WalletBar />
-      <main>
-        <div className='p-4'>{children}</div>
-      </main>
+      <main className='container'>{children}</main>
     </div>
   )
 }

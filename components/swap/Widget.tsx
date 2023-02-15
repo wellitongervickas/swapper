@@ -1,17 +1,25 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { formatUnits } from 'ethers/lib/utils'
+import { ChangeEvent, ComponentProps, useEffect, useState } from 'react'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
+import CardDefault from '../shared/card/Default'
 
-interface SwapWidgetProps {
+interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
   tokenB: Token
   fee: keyof typeof FeeAmount
+  onSwitch(): void
 }
 
-const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
+const SwapWidget = ({
+  tokenA,
+  tokenB,
+  fee,
+  className,
+  onSwitch
+}: SwapWidgetProps) => {
   const config = useChainConfig()
 
   const { getQuoteOut, poolFactory, executeTrade } = usePoolSwap({
@@ -36,11 +44,13 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
     getQuoteOut(amount).then(setQuote)
   }
 
-  const handleChangeTokenIn = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
+  const handleChangeTokenA = (event: ChangeEvent<HTMLInputElement>) => {
+    const fieldValue = event.target.value
+    const [, decimalsValues] = fieldValue.split('.')
+    if (decimalsValues && decimalsValues.length > tokenA.decimals) return
 
-    setAmount(value)
-    handleGetQuote(value)
+    setAmount(fieldValue)
+    handleGetQuote(fieldValue)
   }
 
   const handleExecuteSwap = async () => {
@@ -64,14 +74,15 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   }, [poolFactory])
 
   return (
-    <div>
+    <CardDefault className={className}>
+      <button onClick={onSwitch}>Switch</button>
       <div className='flex flex-col'>
         {tokenA.symbol} amount
         <input
           key={tokenA.address}
           id={tokenA.address}
           type='number'
-          onChange={handleChangeTokenIn}
+          onChange={handleChangeTokenA}
           value={amount}
         />
       </div>
@@ -80,7 +91,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
         <input
           key={tokenB.address}
           id={tokenB.address}
-          type='text'
+          type='number'
           disabled
           value={formatUnits(quote, poolFactory.tokenB.decimals)}
         />
@@ -88,7 +99,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
       <div>
         <button onClick={handleExecuteSwap}>Execute</button>
       </div>
-    </div>
+    </CardDefault>
   )
 }
 

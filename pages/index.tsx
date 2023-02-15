@@ -1,3 +1,3 @@
-import SwapPage from '@/components/swap/Page'
+import Homepagecontainer from '@/components/homepage/Container'
 
-export default SwapPage
+export default Homepagecontainer

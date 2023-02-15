@@ -3,7 +3,7 @@ import useWETHToken from '@/modules/core/tokens/hooks/useWETHToken'
 import useNativeToken from '@/modules/core/tokens/hooks/useNativeToken'
 import { formatUnits } from 'ethers/lib/utils'
 
-export const WalletBalances = () => {
+const WalletBalances = () => {
   const { balance: tokenBalance, decimals: tokenDecimals } = useSwapperToken()
   const { balance: WETHBalance, decimals: WETHDecimals } = useWETHToken()
   const { balance: nativeBalance, decimals: nativeDecimals } = useNativeToken()
@@ -28,3 +28,5 @@ export const WalletBalances = () => {
     </section>
   )
 }
+
+export default WalletBalances
