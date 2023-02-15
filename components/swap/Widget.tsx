@@ -48,6 +48,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
       <div className='flex flex-col'>
         {tokenA.symbol} amount
         <input
+          id={tokenA.address}
           type='number'
           onChange={handleChangeTokenIn}
           defaultValue='0.0'
@@ -56,6 +57,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
       <div className='flex flex-col'>
         {tokenB.symbol} amount
         <input
+          id={tokenB.address}
           type='text'
           disabled
           value={formatUnits(quote, poolFactory.tokenB.decimals)}

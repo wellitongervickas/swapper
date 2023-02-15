@@ -101,8 +101,8 @@ function usePoolSwap({
       const quoteOut = await quoterCall<QuoteExactInputSingleParams, string>(
         'quoteExactInputSingle',
         {
-          tokenIn: constants.tokenA,
-          tokenOut: constants.tokenB,
+          tokenIn: poolFactory.tokenA.address,
+          tokenOut: poolFactory.tokenB.address,
           fee: constants.fee,
           amount: amountIn.toString()
         }

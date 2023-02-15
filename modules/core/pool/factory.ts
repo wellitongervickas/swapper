@@ -29,6 +29,12 @@ export class PoolFactory {
   }
 
   static buildToken(chainId: number, token: IToken) {
-    return new Token(chainId, token.address, token.decimals)
+    return new Token(
+      chainId,
+      token.address,
+      token.decimals,
+      token.symbol,
+      token.name
+    )
   }
 }
