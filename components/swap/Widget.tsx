@@ -11,6 +11,7 @@ import classnames from '@/modules/utils/classnames'
 import SwapTokenOut from './TokenOut'
 import SwapTokenIn from './TokenIn'
 import Divider from '../shared/Divider'
+import SwapCardNativeExecutionAlert from './Cards/NativeExecutionAlert'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -29,6 +30,7 @@ const SwapWidget = ({
   const { state } = useWallet()
 
   const [tokens, setTokens] = useState<Token[]>([tokenA, tokenB])
+  const [executeAsNative, setExecuteAsNative] = useState(false)
 
   const { getQuoteOut, poolFactory, executeTrade, loading, isQuoting } =
     usePoolSwap({
@@ -42,6 +44,10 @@ const SwapWidget = ({
 
   const [quote, setQuote] = useState('0')
   const [amount, setAmount] = useState('0')
+
+  const handleExecuteAsNative = (value: boolean) => {
+    setExecuteAsNative(value)
+  }
 
   const handleResetFields = () => {
     setQuote('0')
@@ -108,17 +114,23 @@ const SwapWidget = ({
           disabled={!state.connected}
           amount={amount}
           onChangeAmount={handleChangeTokenA}
+          onChangeUseNative={handleExecuteAsNative}
         />
         <Divider />
         <SwapTokenOut token={tokens[1]} loading={isQuoting} amount={quote} />
-        <div>
-          <Button
-            loading={loading}
-            onClick={handleExecuteSwap}
-            disabled={loading || !state.connected}
-          >
-            Execute
-          </Button>
+        <div className='flex flex-col space-y-4'>
+          {executeAsNative && (
+            <SwapCardNativeExecutionAlert token={tokens[0]} />
+          )}
+          <div>
+            <Button
+              loading={loading}
+              onClick={handleExecuteSwap}
+              disabled={loading || !state.connected}
+            >
+              Execute
+            </Button>
+          </div>
         </div>
       </div>
     </CardDefault>

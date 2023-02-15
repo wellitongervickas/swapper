@@ -40,9 +40,10 @@ const Button = ({
       {...props}
       className={classnames.merge([
         className,
-        'flex items-center justify-between space-x-2',
-        'rounded-md font-semibold text-black',
-        'disabled:cursor-not-allowed disabled:bg-gray/50 disabled:text-black/50',
+        'transition-all duration-200',
+        'flex items-center justify-between space-x-2 hover:ring-2 hover:ring-primary hover:ring-opacity-40',
+        'rounded-md font-semibold text-black focus:ring-2 focus:ring-primary focus:ring-opacity-40',
+        'disabled:cursor-not-allowed disabled:bg-gray/50 disabled:text-black/50 disabled:ring-0',
         buttonStyle,
         buttonSize
       ])}

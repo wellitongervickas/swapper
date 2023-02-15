@@ -5,31 +5,42 @@ import Input from '../shared/form/Input'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { commify, formatUnits } from 'ethers/lib/utils'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
+import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 
 interface SwapTokenInProps {
   token: Token
   disabled?: boolean
   amount: string
   onChangeAmount(value: string): void
+  onChangeUseNative(value: boolean): void
 }
 
 const SwapTokenIn = ({
   token,
   disabled,
   amount,
-  onChangeAmount
+  onChangeAmount,
+  onChangeUseNative
 }: SwapTokenInProps) => {
+  const chainConfig = useChainConfig()
   const { state } = useWallet()
 
   const [balance, setBalance] = useState('0')
+  const [native, setNative] = useState(false)
 
   const { call } = useERC20Contract({
-    address: token.address
+    address: native ? undefined : token.address
   })
 
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     onChangeAmount(value)
+  }
+
+  const handleChangeToNative = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.checked
+    setNative(value)
+    onChangeUseNative(value)
   }
 
   useEffect(() => {
@@ -39,7 +50,7 @@ const SwapTokenIn = ({
   }, [call, state.address])
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col space-y-4'>
       <Input
         label={token.name}
         key={token.address}
@@ -49,11 +60,25 @@ const SwapTokenIn = ({
         value={amount}
         disabled={disabled}
         suffix={
-          <div className='text-xs text-gray-400'>
-            Balance: {commify(formatUnits(balance, token.decimals)).slice(0, 6)}
+          <div className='flex space-x-2 text-xs text-gray-400'>
+            <span>Balance:</span>
+            <span>
+              {commify(
+                formatUnits(
+                  native ? state.balance : balance,
+                  native ? chainConfig.tokens.NATIVE.decimals : token.decimals
+                )
+              ).slice(0, 6)}
+            </span>
           </div>
         }
       />
+      {!disabled && token.native && (
+        <div>
+          <input type='checkbox' onChange={handleChangeToNative} />
+          <label htmlFor=''>Use native balance</label>
+        </div>
+      )}
     </div>
   )
 }

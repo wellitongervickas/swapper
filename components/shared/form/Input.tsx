@@ -24,14 +24,14 @@ const Input = ({
   suffix,
   ...props
 }: ButtonProps) => {
-  const buttonStyle: string | string[] = {
+  const inputStyle: string | string[] = {
     [Variant.Primary]: [
       'placeholder-stone-400 bg-stone-800 border border-stone-700 text-neutral-100',
       'focus:ring-2 focus:ring-stone-500 focus:outline-none focus-visible:ring-stone-500'
     ]
   }[variant]
 
-  const buttonSize: string = {
+  const inputSize: string = {
     [Size.Default]: 'p-3'
   }[size]
 
@@ -58,8 +58,8 @@ const Input = ({
             'flex items-center justify-between space-x-2',
             'rounded-md font-semibold text-white',
             'w-full rounded-md disabled:cursor-not-allowed disabled:!opacity-40',
-            buttonStyle,
-            buttonSize
+            inputStyle,
+            inputSize
           ])}
         />
       </div>

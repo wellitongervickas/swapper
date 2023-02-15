@@ -8,7 +8,7 @@ const Homepagecontainer = () => {
   return (
     <div className='flex items-center justify-center'>
       <SwapWidget
-        className='w-full md:w-auto md:min-w-[24rem]'
+        className='w-full md:w-[24rem]'
         fee={DEFAULT_SWAP_FEE}
         tokenA={config.tokens.WETH}
         tokenB={config.tokens.SWPR}

@@ -10,6 +10,15 @@ module.exports = {
         DEFAULT: '#8F8F8F',
         100: '#CFCFD0',
         900: '#343434'
+      },
+      green: {
+        500: '#12B76A'
+      },
+      red: {
+        500: '#F04438'
+      },
+      yellow: {
+        500: '#EAB946'
       }
     }
   }
