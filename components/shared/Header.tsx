@@ -1,9 +1,10 @@
 import WalletConnect from '@/components/shared/wallet/Connect'
+import Logo from './Logo'
 
 const Header = () => {
   return (
     <header className='flex justify-between p-4 container'>
-      <div>Swapper</div>
+      <Logo />
       <div>
         <WalletConnect />
       </div>

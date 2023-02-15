@@ -4,7 +4,8 @@ import { ChangeEvent, ComponentProps, useEffect, useState } from 'react'
 import { formatUnits } from 'ethers/lib/utils'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import CardDefault from '../shared/card/Default'
+import CardDefault from '@/components/shared/card/Default'
+import Button, { Variant } from '@/components/shared/form/Button'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
@@ -19,7 +20,8 @@ const SwapWidget = ({
   tokenB,
   fee,
   className,
-  onSwitch
+  onSwitch,
+  ...props
 }: SwapWidgetProps) => {
   const config = useChainConfig()
   const { state } = useWallet()
@@ -76,7 +78,7 @@ const SwapWidget = ({
   }, [poolFactory])
 
   return (
-    <CardDefault className={className}>
+    <CardDefault {...props} className={className}>
       <button onClick={onSwitch}>Switch</button>
       <div className='flex flex-col'>
         {tokenA.symbol} amount
@@ -100,9 +102,13 @@ const SwapWidget = ({
         />
       </div>
       <div>
-        <button onClick={handleExecuteSwap} disabled={!state.connected}>
+        <Button
+          variant={Variant.Secondary}
+          onClick={handleExecuteSwap}
+          disabled={!state.connected}
+        >
           Execute
-        </button>
+        </Button>
       </div>
     </CardDefault>
   )
