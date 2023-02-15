@@ -112,6 +112,9 @@ function usePoolSwap({
     }
 
     const receipt = await routerCall('exactInputSingle', params)
+
+    console.log(receipt)
+
     return receipt
   }
 

@@ -53,10 +53,15 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
   }
 
   useEffect(() => {
-    if (poolFactory.tokenA.address !== tokenB.address) {
+    /**
+     * Reset fields when pool factory changes
+     * to avoind keep the same amount with
+     * other decimals on amount and quote field
+     */
+    if (poolFactory) {
       handleResetFields()
     }
-  }, [poolFactory.tokenA.address, tokenB.address])
+  }, [poolFactory])
 
   return (
     <div>
@@ -68,6 +73,7 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
           type='number'
           onChange={handleChangeTokenIn}
           defaultValue='0.0'
+          value={amount}
         />
       </div>
       <div className='flex flex-col'>
