@@ -72,7 +72,6 @@ const SwapWidget = ({ tokenA, tokenB, fee }: SwapWidgetProps) => {
           id={tokenA.address}
           type='number'
           onChange={handleChangeTokenIn}
-          defaultValue='0.0'
           value={amount}
         />
       </div>
