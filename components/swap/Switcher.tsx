@@ -19,10 +19,10 @@ const SwapSwitch = ({
     <div className='flex space-x-2 rounded bg-stone-900 p-1'>
       {Children.toArray(
         [tokenA, tokenB].map((token) => (
-          <span
+          <button
             onClick={onSwitch}
             className={classnames.merge([
-              'cursor-pointer rounded py-px px-1 text-xs',
+              'rounded py-px px-1 text-xs',
               {
                 'bg-primary text-black': activeToken.address === token.address
               },
@@ -30,7 +30,7 @@ const SwapSwitch = ({
             ])}
           >
             {token.symbol}
-          </span>
+          </button>
         ))
       )}
     </div>
