@@ -60,15 +60,9 @@ function usePoolSwap({
     if (!contract) {
       return
     }
-    const [tokenA, tokenB, fee] = await Promise.all([
-      poolCall('token0'),
-      poolCall('token1'),
-      poolCall('fee')
-    ])
+    const fee = await poolCall('fee')
 
     return {
-      tokenA,
-      tokenB,
       fee
     }
   }, [poolCall, contract])

@@ -10,7 +10,5 @@ export type PoolFactoryConstructor = {
 }
 
 export type PoolConstants = {
-  tokenA: string
-  tokenB: string
   fee: number
 }

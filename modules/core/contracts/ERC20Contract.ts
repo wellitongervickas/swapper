@@ -1,4 +1,4 @@
-import { Contract, ContractTransaction, ethers, Signer } from 'ethers'
+import { Contract, ethers, Signer } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import { ContractErrors } from '@/modules/core/contracts/types/error'
 import Logger from '@/modules/utils/logger'
@@ -21,13 +21,17 @@ class ERC20Contract {
     this.#contract = new Contract(contractAddress, this.#abi, signerOrProvider)
   }
 
+  get contract() {
+    return this.#contract
+  }
+
   get signerOrProvider() {
     return this.#signerOrProvider
   }
 
   async allowance(owner: string, spender: string) {
     try {
-      const allowance = await this.#contract.allowance(owner, spender)
+      const allowance = await this.contract.allowance(owner, spender)
       return allowance.toString()
     } catch (error: any) {
       Logger.error(
@@ -39,38 +43,22 @@ class ERC20Contract {
   }
 
   async approve(spender: string, amount: ethers.BigNumber) {
-    try {
-      const payload = [spender, amount]
+    const payload = [spender, amount]
 
-      const estimate = await GenericContract.estimateGasByMethod(
-        this.#contract,
-        'approve',
-        payload
-      )
+    const receipt = await GenericContract.callTransactionByMethod.call(
+      this,
+      this.contract,
+      this.signerOrProvider,
+      'approve',
+      payload
+    )
 
-      const gasLimit = await GenericContract.getGasLimit(estimate)
-      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
-
-      const transaction = (await this.#contract.approve(...payload, {
-        gasLimit,
-        gasPrice
-      })) as ContractTransaction
-
-      const receipt = await transaction.wait()
-
-      return receipt
-    } catch (error: any) {
-      Logger.error(
-        `${this._name} approve call failed`,
-        ContractErrors.TxFailed,
-        error
-      )
-    }
+    return receipt
   }
 
   async balanceOf(address: string): Promise<string> {
     try {
-      const balanceOf = await this.#contract.balanceOf(address)
+      const balanceOf = await this.contract.balanceOf(address)
       return balanceOf.toString()
     } catch (error: any) {
       Logger.error(
