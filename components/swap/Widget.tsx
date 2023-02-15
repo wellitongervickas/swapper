@@ -1,7 +1,6 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
-import { ChangeEvent, ComponentProps, useEffect, useState } from 'react'
-import { commify, formatUnits } from 'ethers/lib/utils'
+import { ComponentProps, useEffect, useState } from 'react'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import CardDefault from '@/components/shared/card/Default'
@@ -9,8 +8,9 @@ import Button from '@/components/shared/form/Button'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import SwapSwitch from './Switcher'
 import classnames from '@/modules/utils/classnames'
-import Input from '../shared/form/Input'
-import Pin from '../shared/Pin'
+import SwapTokenOut from './TokenOut'
+import SwapTokenIn from './TokenIn'
+import Divider from '../shared/Divider'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -57,13 +57,12 @@ const SwapWidget = ({
     getQuoteOut(amount).then(setQuote)
   }
 
-  const handleChangeTokenA = (event: ChangeEvent<HTMLInputElement>) => {
-    const fieldValue = event.target.value
-    const [, decimalsValues] = fieldValue.split('.')
+  const handleChangeTokenA = (value: string) => {
+    const [, decimalsValues] = value.split('.')
     if (decimalsValues && decimalsValues.length > tokens[0].decimals) return
 
-    setAmount(fieldValue)
-    handleGetQuote(fieldValue)
+    setAmount(value)
+    handleGetQuote(value)
   }
 
   const handleExecuteSwap = async () => {
@@ -89,7 +88,10 @@ const SwapWidget = ({
   return (
     <CardDefault
       {...props}
-      className={classnames.merge([className, 'ring-2 ring-gray-900/50'])}
+      className={classnames.merge([
+        className,
+        'flex flex-col space-y-4 ring-2 ring-gray-900/50'
+      ])}
     >
       <div className='flex'>
         <SwapSwitch
@@ -101,27 +103,14 @@ const SwapWidget = ({
         />
       </div>
       <div className='flex flex-col space-y-4'>
-        <div className='flex flex-col'>
-          {tokens[0].symbol} amount
-          <Input
-            key={tokens[0].address}
-            id={tokens[0].address}
-            type='number'
-            onChange={handleChangeTokenA}
-            value={amount}
-            disabled={!state.connected}
-          />
-        </div>
-        <section className='flex flex-col'>
-          <h3>{tokens[1].symbol} amount</h3>
-          {isQuoting ? (
-            <div className='max-w-[4rem] pt-2'>
-              <Pin pinsClassName='bg-gray' />
-            </div>
-          ) : (
-            <div>{commify(formatUnits(quote, tokens[1].decimals))}</div>
-          )}
-        </section>
+        <SwapTokenIn
+          token={tokens[0]}
+          disabled={!state.connected}
+          amount={amount}
+          onChangeAmount={handleChangeTokenA}
+        />
+        <Divider />
+        <SwapTokenOut token={tokens[1]} loading={isQuoting} amount={quote} />
         <div>
           <Button
             loading={loading}

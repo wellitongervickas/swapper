@@ -12,14 +12,16 @@ export const WalletInfo = () => {
     <div
       className={classnames.merge([
         'rounded-md border border-white py-2 px-6',
-        'flex items-center justify-between space-x-4'
+        'flex items-center justify-between md:space-x-4'
       ])}
     >
-      <span>{config.title}</span>
-      <span>
-        <Pin maxPins={1} pinsClassName='bg-primary' />
-      </span>
-      <span>{string.toEllipsis(state.address, 6, -4)}</span>
+      <span className='hidden md:inline-block'>{config.title}</span>
+      <div className='flex items-center justify-between space-x-4'>
+        <span>
+          <Pin maxPins={1} pinsClassName='bg-primary' />
+        </span>
+        <span>{string.toEllipsis(state.address, 6, -4)}</span>
+      </div>
     </div>
   )
 }

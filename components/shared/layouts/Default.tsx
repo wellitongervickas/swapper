@@ -5,12 +5,12 @@ interface LayoutDefaultProps extends ComponentProps<'div'> {
   children: ReactNode
 }
 
-export const LayoutDefault = ({ children, ...props }: LayoutDefaultProps) => {
+export const LayoutDefault = ({ children }: LayoutDefaultProps) => {
   return (
-    <div {...props}>
+    <>
       <Header />
       <main className='container'>{children}</main>
-    </div>
+    </>
   )
 }
 

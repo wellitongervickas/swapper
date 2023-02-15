@@ -1,5 +1,5 @@
 import classnames from '@/modules/utils/classnames'
-import { ComponentProps } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
 export enum Variant {
   Primary
@@ -10,15 +10,18 @@ export enum Size {
 }
 
 interface ButtonProps extends ComponentProps<'input'> {
+  label: string
   variant?: Variant
   size?: Size
   loading?: boolean
+  suffix?: ReactNode
 }
 
 const Input = ({
   className,
   variant = Variant.Primary,
   size = Size.Default,
+  suffix,
   ...props
 }: ButtonProps) => {
   const buttonStyle: string | string[] = {
@@ -43,17 +46,23 @@ const Input = ({
           }
         `}
       </style>
-      <input
-        {...props}
-        className={classnames.merge([
-          className,
-          'flex items-center justify-between space-x-2',
-          'rounded-md font-semibold text-white',
-          'w-full rounded-md disabled:cursor-not-allowed disabled:!opacity-40',
-          buttonStyle,
-          buttonSize
-        ])}
-      />
+      <div className='flex flex-col space-y-2'>
+        <div className='flex flex-row items-center justify-between'>
+          <label htmlFor={props.id}>{props.label}</label>
+          {suffix}
+        </div>
+        <input
+          {...props}
+          className={classnames.merge([
+            className,
+            'flex items-center justify-between space-x-2',
+            'rounded-md font-semibold text-white',
+            'w-full rounded-md disabled:cursor-not-allowed disabled:!opacity-40',
+            buttonStyle,
+            buttonSize
+          ])}
+        />
+      </div>
     </>
   )
 }
