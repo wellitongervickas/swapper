@@ -1,4 +1,4 @@
-import { Children, useMemo } from 'react'
+import { Children } from 'react'
 import classnames from '@/modules/utils/classnames'
 
 interface PinProps {
@@ -9,14 +9,11 @@ interface PinProps {
 }
 
 const Pin = ({ maxPins, className, pinsClassName }: PinProps) => {
-  const pins = useMemo(
-    () => Array.from({ length: maxPins || 4 }).fill(''),
-    [maxPins]
-  )
+  const pins = Array.from({ length: maxPins || 4 })
 
   const styles = classnames.merge([
     pinsClassName || 'bg-gray-500',
-    'animated-ping h-1.5 w-1.5 rounded-full'
+    'animated-ping h-2 w-2 rounded-full'
   ])
 
   return (

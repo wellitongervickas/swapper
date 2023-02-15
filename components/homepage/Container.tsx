@@ -18,12 +18,11 @@ const Homepagecontainer = () => {
   }
 
   return (
-    <div>
+    <div className='flex flex-col space-y-4'>
       <WalletBalances />
       <div>
         <SwapWidget
           onSwitch={handleSwitchTokens}
-          className='max-w-[16rem]'
           fee={DEFAULT_SWAP_FEE}
           tokenA={tokens[0]}
           tokenB={tokens[1]}

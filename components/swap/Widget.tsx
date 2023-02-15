@@ -80,35 +80,37 @@ const SwapWidget = ({
   return (
     <CardDefault {...props} className={className}>
       <button onClick={onSwitch}>Switch</button>
-      <div className='flex flex-col'>
-        {tokenA.symbol} amount
-        <input
-          key={tokenA.address}
-          id={tokenA.address}
-          type='number'
-          onChange={handleChangeTokenA}
-          value={amount}
-          disabled={!state.connected}
-        />
-      </div>
-      <div className='flex flex-col'>
-        {tokenB.symbol} amount
-        <input
-          key={tokenB.address}
-          id={tokenB.address}
-          type='number'
-          disabled
-          value={formatUnits(quote, poolFactory.tokenB.decimals)}
-        />
-      </div>
-      <div>
-        <Button
-          variant={Variant.Secondary}
-          onClick={handleExecuteSwap}
-          disabled={!state.connected}
-        >
-          Execute
-        </Button>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex flex-col'>
+          {tokenA.symbol} amount
+          <input
+            key={tokenA.address}
+            id={tokenA.address}
+            type='number'
+            onChange={handleChangeTokenA}
+            value={amount}
+            disabled={!state.connected}
+          />
+        </div>
+        <div className='flex flex-col'>
+          {tokenB.symbol} amount
+          <input
+            key={tokenB.address}
+            id={tokenB.address}
+            type='number'
+            disabled
+            value={formatUnits(quote, poolFactory.tokenB.decimals)}
+          />
+        </div>
+        <div>
+          <Button
+            variant={Variant.Secondary}
+            onClick={handleExecuteSwap}
+            disabled={!state.connected}
+          >
+            Execute
+          </Button>
+        </div>
       </div>
     </CardDefault>
   )
