@@ -1,6 +1,5 @@
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { ethers } from 'ethers'
 
 export type PoolFactoryConstructor = {
   chainId: number
@@ -8,13 +7,6 @@ export type PoolFactoryConstructor = {
   tokenA: Token
   tokenB: Token
   fee: FeeAmount
-}
-
-export type PoolInfo = {
-  liquidity: ethers.BigNumber
-  sqrtPriceX96: ethers.BigNumber
-  tick: number
-  tickSpacing: number
 }
 
 export type PoolConstants = {

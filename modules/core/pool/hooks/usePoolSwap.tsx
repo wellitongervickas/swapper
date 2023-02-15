@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
-import { PoolConstants, PoolInfo } from '../types/factory'
+import { PoolConstants } from '../types/factory'
 import usePoolContract from './usePoolContract'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { Token } from '@/modules/core/tokens/types/token'
@@ -11,6 +11,7 @@ import { parseUnits } from 'ethers/lib/utils'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
 import useRouterContract from './useRouterContract'
+import { RouterExactInputSingleParams } from '../types/router'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -72,28 +73,10 @@ function usePoolSwap({
     }
   }, [poolCall, contract])
 
-  const getState = useCallback(async (): Promise<PoolInfo | undefined> => {
-    if (!contract) {
-      return
-    }
-    const [tickSpacing, liquidity, slot0] = await Promise.all([
-      poolCall('tickSpacing'),
-      poolCall('liquidity'),
-      poolCall('slot0')
-    ])
-
-    return {
-      tickSpacing,
-      liquidity,
-      sqrtPriceX96: slot0?.[0],
-      tick: slot0?.[1]
-    }
-  }, [poolCall, contract])
-
   const getQuoteOut = useCallback(
     async (amount: string): Promise<string> => {
-      const [state, constants] = await Promise.all([getState(), getConstants()])
-      if (!state || !constants) return '0'
+      const constants = await getConstants()
+      if (!constants) return '0'
 
       const amountIn = parseUnits(amount, poolFactory.tokenA.decimals)
       if (amountIn.lte(0)) return '0'
@@ -110,7 +93,7 @@ function usePoolSwap({
 
       return quoteOut || '0'
     },
-    [getState, getConstants, poolFactory, quoterCall]
+    [getConstants, poolFactory, quoterCall]
   )
 
   const executeTrade = async (amount: string) => {
@@ -125,15 +108,13 @@ function usePoolSwap({
     const constants = await getConstants()
     if (!constants) return
 
-    const params = {
-      tokenIn: constants.tokenA,
-      tokenOut: constants.tokenB,
+    const params: RouterExactInputSingleParams = {
+      tokenIn: poolFactory.tokenA.address,
+      tokenOut: poolFactory.tokenB.address,
       fee: constants.fee,
       recipient: state.address,
       deadline: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
-      amountIn: amountIn,
-      amountOutMinimum: 0,
-      sqrtPriceLimitX96: 0
+      amountIn: amountIn
     }
 
     const receipt = await routerCall('exactInputSingle', params)
@@ -157,7 +138,6 @@ function usePoolSwap({
   return {
     poolFactory,
     getConstants,
-    getState,
     getQuoteOut,
     executeTrade
   }
