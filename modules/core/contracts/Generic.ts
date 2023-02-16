@@ -7,11 +7,12 @@ import { ContractErrors } from './types/error'
 export const DEFAULT_GAS_LIMIT = ethers.BigNumber.from(250000)
 
 export class GenericContract {
-  static async callTransactionByMethod<T = any>(
+  static async callTransactionByMethodPayable<T = any>(
     contract: Contract,
     signerOrProvider: Signer | Provider,
     method: string,
-    data: T
+    options: { value: string },
+    data?: T
   ) {
     try {
       const estimate = await GenericContract.estimateGasByMethod(
@@ -22,7 +23,42 @@ export class GenericContract {
 
       const gasLimit = await GenericContract.getGasLimit(estimate)
       const gasPrice = await GenericContract.getGasPrice(signerOrProvider)
-      const txData = [data ? data : undefined].flat()
+      const txData = data ? [data].flat() : []
+
+      const transaction = (await contract[method](...txData, {
+        gasLimit,
+        gasPrice,
+        ...options
+      })) as ContractTransaction
+
+      const receipt = await transaction.wait()
+
+      return receipt
+    } catch (error: any) {
+      Logger.error(
+        `${this.name} ${method} call failed`,
+        ContractErrors.TxFailed,
+        error
+      )
+    }
+  }
+
+  static async callTransactionByMethod<T = any>(
+    contract: Contract,
+    signerOrProvider: Signer | Provider,
+    method: string,
+    data?: T
+  ) {
+    try {
+      const estimate = await GenericContract.estimateGasByMethod(
+        contract,
+        method,
+        data
+      )
+
+      const gasLimit = await GenericContract.getGasLimit(estimate)
+      const gasPrice = await GenericContract.getGasPrice(signerOrProvider)
+      const txData = data ? [data].flat() : []
 
       const transaction = (await contract[method](...txData, {
         gasLimit,

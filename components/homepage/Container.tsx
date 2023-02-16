@@ -10,7 +10,7 @@ const Homepagecontainer = () => {
       <SwapWidget
         className='w-full md:w-[24rem]'
         fee={DEFAULT_SWAP_FEE}
-        tokenA={config.tokens.WETH}
+        tokenA={config.tokens.WNATIVE}
         tokenB={config.tokens.SWPR}
       />
     </div>

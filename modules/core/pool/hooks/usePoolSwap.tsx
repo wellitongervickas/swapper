@@ -12,6 +12,7 @@ import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { BigNumber } from 'bignumber.js'
 import useRouterContract from './useRouterContract'
 import { RouterExactInputSingleParams } from '../types/router'
+import useWNativeContract from '../../contracts/hooks/useWNativeContract'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -20,6 +21,8 @@ interface UsePoolSwapProps {
   tokenA: Token
   tokenB: Token
   fee: keyof typeof FeeAmount
+  nativeAddress?: string
+  executeAsNative?: boolean
 }
 
 function usePoolSwap({
@@ -28,7 +31,8 @@ function usePoolSwap({
   fee,
   factoryAddress,
   quoterAddress,
-  routerAddress
+  routerAddress,
+  executeAsNative
 }: UsePoolSwapProps) {
   const { state, wallet } = useWallet()
 
@@ -46,6 +50,10 @@ function usePoolSwap({
 
   const { call: tokenACall, loading: tokenALoading } = useERC20Contract({
     address: tokenA.address
+  })
+
+  const { call: wNativeCall, loading: nativeLoading } = useWNativeContract({
+    address: tokenA.native && executeAsNative ? tokenA.address : undefined
   })
 
   const {
@@ -106,6 +114,11 @@ function usePoolSwap({
 
     const amountIn = parseUnits(amount, poolFactory.tokenA.decimals).toString()
 
+    if (executeAsNative) {
+      // deposit native in exchange to wrapped native
+      await executeAsNativeDeposit(amountIn)
+    }
+
     const isAllowanceApproved = await checkAllowanceApproval(amountIn)
     if (!isAllowanceApproved) return
 
@@ -126,6 +139,10 @@ function usePoolSwap({
     return receipt
   }
 
+  const executeAsNativeDeposit = async (amount: string) => {
+    return await wNativeCall('deposit', amount)
+  }
+
   const checkAllowanceApproval = async (amount: string) => {
     const allowance = await tokenACall(
       'allowance',
@@ -141,7 +158,12 @@ function usePoolSwap({
   }
 
   return {
-    loading: tokenALoading || poolLoading || quoterLoading || routerLoading,
+    loading:
+      tokenALoading ||
+      poolLoading ||
+      quoterLoading ||
+      routerLoading ||
+      nativeLoading,
     isQuoting: quoterLoading,
     poolFactory,
     getConstants,

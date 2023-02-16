@@ -37,9 +37,10 @@ const SwapWidget = ({
       factoryAddress: config.hubs.uniswapFactory.address,
       quoterAddress: config.hubs.uniswapQuoter.address,
       routerAddress: config.hubs.uniswapRouter.address,
-      fee,
       tokenA: tokens[0],
-      tokenB: tokens[1]
+      tokenB: tokens[1],
+      executeAsNative,
+      fee
     })
 
   const [quote, setQuote] = useState('0')
@@ -52,6 +53,7 @@ const SwapWidget = ({
   const handleResetFields = () => {
     setQuote('0')
     setAmount('0')
+    setExecuteAsNative(false)
   }
 
   const handleSwitchTokens = () => {
@@ -115,6 +117,7 @@ const SwapWidget = ({
           amount={amount}
           onChangeAmount={handleChangeTokenA}
           onChangeUseNative={handleExecuteAsNative}
+          executeAsNativeValue={executeAsNative}
         />
         <Divider />
         <SwapTokenOut token={tokens[1]} loading={isQuoting} amount={quote} />

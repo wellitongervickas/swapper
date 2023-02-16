@@ -13,6 +13,7 @@ interface SwapTokenInProps {
   amount: string
   onChangeAmount(value: string): void
   onChangeUseNative(value: boolean): void
+  executeAsNativeValue?: boolean
 }
 
 const SwapTokenIn = ({
@@ -20,7 +21,8 @@ const SwapTokenIn = ({
   disabled,
   amount,
   onChangeAmount,
-  onChangeUseNative
+  onChangeUseNative,
+  executeAsNativeValue
 }: SwapTokenInProps) => {
   const chainConfig = useChainConfig()
   const { state } = useWallet()
@@ -75,7 +77,11 @@ const SwapTokenIn = ({
       />
       {!disabled && token.native && (
         <div>
-          <input type='checkbox' onChange={handleChangeToNative} />
+          <input
+            type='checkbox'
+            onChange={handleChangeToNative}
+            checked={executeAsNativeValue}
+          />
           <label htmlFor=''>Use native balance</label>
         </div>
       )}
