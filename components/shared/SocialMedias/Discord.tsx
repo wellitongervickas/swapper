@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export const SocialMediaDiscord = () => {
   return (
-    <Link href='#'>
+    <Link href='#' className='transition-opacity duration-200 hover:opacity-80'>
       <div
         className={classnames.merge([
           'rounded-md border border-white py-2 px-4 text-xs',
