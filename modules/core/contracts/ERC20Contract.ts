@@ -78,7 +78,6 @@ class ERC20Contract {
 
       return balanceOf.toString()
     } catch (error: any) {
-      console.log(error)
       Logger.error(
         `${this._name} balanceOf call failed`,
         ContractErrors.TxFailed,

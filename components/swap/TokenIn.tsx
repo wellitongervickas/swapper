@@ -5,6 +5,7 @@ import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { commify, formatUnits } from 'ethers/lib/utils'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
+import FormCheckbox from '../shared/form/Checkbox'
 
 interface SwapTokenInProps {
   token: Token
@@ -37,7 +38,6 @@ const SwapTokenIn = ({
     await call('balanceOf', state.address).then(
       (balance) => balance && setBalance(balance)
     )
-    console.log('called')
   }, [state.address, call])
 
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
@@ -83,12 +83,12 @@ const SwapTokenIn = ({
       />
       {!disabled && token.native && (
         <div>
-          <input
-            type='checkbox'
+          <FormCheckbox
+            id='useAsNative'
             onChange={handleChangeToNative}
             checked={executeAsNativeValue}
+            label={'Use native balance'}
           />
-          <label htmlFor=''>Use native balance</label>
         </div>
       )}
     </div>
