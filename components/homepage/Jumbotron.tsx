@@ -36,9 +36,9 @@ const HomepageWrapper = ({
           <SocialMediaDiscord />
         </div>
       </div>
-      <div className='relative flex items-center justify-end'>
-        <div className='absolute h-full w-full'>
-          <div className='absolute left-[6rem] opacity-40'>
+      <div className='relative'>
+        <div className='absolute  h-full w-full '>
+          <div className='absolute left-[6rem] hidden opacity-40 md:block'>
             <Image
               src='/assets/icons/ball.svg'
               alt='balls'
@@ -46,7 +46,7 @@ const HomepageWrapper = ({
               height={120}
             />
           </div>
-          <div className='absolute -bottom-16 -right-16'>
+          <div className='absolute -bottom-16 hidden md:-right-8 md:block lg:-right-16'>
             <Image
               src='/assets/icons/ball.svg'
               alt='balls'
@@ -55,7 +55,9 @@ const HomepageWrapper = ({
             />
           </div>
         </div>
-        <div className='z-3 relative'>{children}</div>
+        <div className='z-3 relative flex items-center justify-center md:flex md:justify-end'>
+          {children}
+        </div>
       </div>
     </div>
   </div>
