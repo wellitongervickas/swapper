@@ -21,7 +21,7 @@ const SwapCardStatus = ({ status }: SwapCardStatusProps) => (
           <Alert variant={Variant.Error}>Swap has failed, try again.</Alert>
         ),
         [PoolSwapStatus.ExecutionSuccess]: (
-          <Alert variant={Variant.Success}>Swap has execute.</Alert>
+          <Alert variant={Variant.Success}>Swap has been executed.</Alert>
         ),
         [PoolSwapStatus.PoolNotAvailable]: (
           <Alert variant={Variant.Error}>Liquidity pool not available.</Alert>
