@@ -22,6 +22,10 @@ export class Chain {
     return this.#options.title
   }
 
+  get icon() {
+    return this.#options.icon
+  }
+
   addHub(hub: ChainHub) {
     this.#hubs = merge(this.#hubs, hub)
   }

@@ -5,6 +5,7 @@ export type ChainOptions = {
   scanURL: string
   name: string
   title: string
+  icon: string
 }
 
 export type ChainHub = {

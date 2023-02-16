@@ -4,7 +4,8 @@ const goerli = new Chain({
   id: 5,
   title: 'Goerli',
   name: 'goerli',
-  scanURL: 'https://goerli.etherscan.io'
+  scanURL: 'https://goerli.etherscan.io',
+  icon: '/assets/tokens/eth.svg'
 })
 
 goerli.addHub({
