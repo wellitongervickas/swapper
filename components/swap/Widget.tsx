@@ -1,6 +1,6 @@
 import useChainConfig from '@/modules/shared/hooks/useChainConfig'
 import usePoolSwap from '@/modules/core/pool/hooks/usePoolSwap'
-import { ComponentProps, useEffect, useState } from 'react'
+import { ComponentProps, useEffect, useMemo, useState } from 'react'
 import { Token } from '@/modules/core/tokens/types/token'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import CardDefault from '@/components/shared/card/Default'
@@ -12,6 +12,8 @@ import SwapTokenOut from './TokenOut'
 import SwapTokenIn from './TokenIn'
 import Divider from '../shared/Divider'
 import SwapCardNativeExecutionAlert from './Cards/NativeExecutionAlert'
+import { BigNumber } from 'bignumber.js'
+import SwapCardReceipt from './Cards/Receipt'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -30,6 +32,7 @@ const SwapWidget = ({
   const { state } = useWallet()
 
   const [tokens, setTokens] = useState<Token[]>([tokenA, tokenB])
+  const [hashAddress, setHashAddress] = useState('')
   const [executeAsNative, setExecuteAsNative] = useState(false)
 
   const {
@@ -53,6 +56,11 @@ const SwapWidget = ({
   const [quote, setQuote] = useState('0')
   const [amount, setAmount] = useState('0')
 
+  const isAmountZero = useMemo(
+    () => new BigNumber(amount, tokens[0].decimals).eq(0),
+    [amount, tokens]
+  )
+
   const handleExecuteAsNative = (value: boolean) => {
     setExecuteAsNative(value)
   }
@@ -61,6 +69,7 @@ const SwapWidget = ({
     setQuote('0')
     setAmount('0')
     setExecuteAsNative(false)
+    setHashAddress('')
   }
 
   const handleSwitchTokens = () => {
@@ -86,6 +95,7 @@ const SwapWidget = ({
 
     if (receipt) {
       handleResetFields()
+      setHashAddress(receipt.transactionHash)
     }
   }
 
@@ -110,7 +120,7 @@ const SwapWidget = ({
     >
       <div className='flex'>
         <SwapSwitch
-          disabled={!state.connected}
+          disabled={loading || !state.connected}
           activeToken={tokens[0]}
           tokenA={tokenA}
           tokenB={tokenB}
@@ -120,7 +130,7 @@ const SwapWidget = ({
       <div className='flex flex-col space-y-4'>
         <SwapTokenIn
           token={tokens[0]}
-          disabled={!state.connected}
+          disabled={loading || !state.connected}
           amount={amount}
           onChangeAmount={handleChangeTokenA}
           onChangeUseNative={handleExecuteAsNative}
@@ -136,14 +146,15 @@ const SwapWidget = ({
             <Button
               loading={loading}
               onClick={handleExecuteSwap}
-              disabled={loading || !state.connected}
+              disabled={loading || !state.connected || isAmountZero}
             >
-              Execute
+              {isExecuting ? 'Executing' : 'Execute'}
             </Button>
             {isExecuting && <span>{remainingTime}</span>}
           </div>
         </div>
       </div>
+      {hashAddress && <SwapCardReceipt hashAddress={hashAddress} />}
     </CardDefault>
   )
 }

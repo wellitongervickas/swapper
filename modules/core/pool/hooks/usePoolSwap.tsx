@@ -15,6 +15,7 @@ import { RouterExactInputSingleParams } from '../types/router'
 import useWNativeContract from '../../contracts/hooks/useWNativeContract'
 import useRemainingTime from '@/modules/shared/hooks/useRemainingTime'
 import { Duration } from 'luxon'
+import { ContractReceipt } from 'ethers'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -153,8 +154,13 @@ function usePoolSwap({
       amountIn: amountIn
     }
 
-    setDeadlineTime(params.deadline * 1000)
-    const receipt = await routerCall('exactInputSingle', params)
+    setDeadlineTime(60 * 10 * 1000)
+
+    const receipt: ContractReceipt = await routerCall<typeof params>(
+      'exactInputSingle',
+      params
+    )
+
     setDeadlineTime(0)
 
     return receipt

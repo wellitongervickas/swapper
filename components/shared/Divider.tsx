@@ -1,3 +1,3 @@
-const Divider = () => <div className='h-px bg-gray-600' />
+const Divider = () => <div className='h-px bg-stone-700' />
 
 export default Divider

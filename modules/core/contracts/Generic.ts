@@ -1,5 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { Contract, ContractTransaction, ethers, Signer } from 'ethers'
+import {
+  Contract,
+  ContractTransaction,
+  ContractReceipt,
+  ethers,
+  Signer
+} from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import Logger from '@/modules/utils/logger'
 import { ContractErrors } from './types/error'
@@ -13,7 +19,7 @@ export class GenericContract {
     method: string,
     options: { value: string },
     data?: T
-  ) {
+  ): Promise<ContractReceipt | undefined> {
     try {
       const estimate = await GenericContract.estimateGasByMethod(
         contract,

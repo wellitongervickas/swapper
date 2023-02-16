@@ -4,7 +4,7 @@ const goerli = new Chain({
   id: 5,
   title: 'Goerli',
   name: 'goerli',
-  scanURL: 'goerli.etherscan.io'
+  scanURL: 'https://goerli.etherscan.io'
 })
 
 goerli.addHub({
