@@ -11,7 +11,7 @@ export const WalletInfo = () => {
   return (
     <div
       className={classnames.merge([
-        'rounded-md border border-white py-2 px-6',
+        'rounded-md border border-white py-2 px-6 text-xs',
         'flex items-center justify-between md:space-x-4'
       ])}
     >

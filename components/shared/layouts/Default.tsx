@@ -9,7 +9,7 @@ export const LayoutDefault = ({ children }: LayoutDefaultProps) => {
   return (
     <>
       <Header />
-      <main className='container'>{children}</main>
+      <main>{children}</main>
     </>
   )
 }
