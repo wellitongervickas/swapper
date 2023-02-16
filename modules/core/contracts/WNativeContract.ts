@@ -1,6 +1,8 @@
-import { Contract, Signer } from 'ethers'
+import { Contract, ContractTransaction, Signer } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import GenericContract from './Generic'
+import { ContractErrors } from './types/error'
+import Logger from '@/modules/utils/logger'
 
 class WNativeContract {
   readonly _name = 'WNativeContract'
@@ -24,15 +26,31 @@ class WNativeContract {
   }
 
   async deposit(amount: string) {
-    const receipt = await GenericContract.callTransactionByMethodPayable.call(
-      this,
-      this.contract,
-      this.signerOrProvider,
-      'deposit',
-      { value: amount }
-    )
+    try {
+      const estimate = await GenericContract.estimateGasByMethod(
+        this.contract,
+        'deposit'
+      )
 
-    return receipt
+      const gasLimit = await GenericContract.getGasLimit(estimate)
+      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
+
+      const transaction = (await this.contract.deposit({
+        gasLimit,
+        gasPrice,
+        value: amount
+      })) as ContractTransaction
+
+      const receipt = await transaction.wait()
+
+      return receipt
+    } catch (error: any) {
+      Logger.error(
+        `${this._name} deposit call failed`,
+        ContractErrors.TxFailed,
+        error
+      )
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { Contract, ethers, Signer } from 'ethers'
+import { Contract, ContractTransaction, ethers, Signer } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import { ContractErrors } from '@/modules/core/contracts/types/error'
 import Logger from '@/modules/utils/logger'
@@ -43,29 +43,48 @@ class ERC20Contract {
   }
 
   async approve(spender: string, amount: ethers.BigNumber) {
-    const payload = [spender, amount]
+    try {
+      const payload = [spender, amount]
 
-    const receipt = await GenericContract.callTransactionByMethod.call(
-      this,
-      this.contract,
-      this.signerOrProvider,
-      'approve',
-      payload
-    )
+      const estimate = await GenericContract.estimateGasByMethod(
+        this.contract,
+        'approve',
+        payload
+      )
 
-    return receipt
+      const gasLimit = await GenericContract.getGasLimit(estimate)
+      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
+
+      const transaction = (await this.contract.approve(...payload, {
+        gasLimit,
+        gasPrice
+      })) as ContractTransaction
+
+      const receipt = await transaction.wait()
+
+      return receipt
+    } catch (error: any) {
+      Logger.error(
+        `${this._name} approve call failed`,
+        ContractErrors.TxFailed,
+        error
+      )
+    }
   }
 
   async balanceOf(address: string): Promise<string> {
     try {
       const balanceOf = await this.contract.balanceOf(address)
+
       return balanceOf.toString()
     } catch (error: any) {
+      console.log(error)
       Logger.error(
         `${this._name} balanceOf call failed`,
         ContractErrors.TxFailed,
         error
       )
+
       return '0'
     }
   }

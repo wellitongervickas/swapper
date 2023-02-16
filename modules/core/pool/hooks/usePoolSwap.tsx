@@ -16,6 +16,7 @@ import useWNativeContract from '../../contracts/hooks/useWNativeContract'
 import useRemainingTime from '@/modules/shared/hooks/useRemainingTime'
 import { Duration } from 'luxon'
 import { ContractReceipt } from 'ethers'
+import { PoolSwapStatus } from '../types/enums'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -39,6 +40,7 @@ function usePoolSwap({
 }: UsePoolSwapProps) {
   const { state, wallet } = useWallet()
   const [deadlineTime, setDeadlineTime] = useState(0)
+  const [status, setStatus] = useState<PoolSwapStatus>()
 
   const { label: remainingTime } = useRemainingTime(
     Duration.fromMillis(deadlineTime).shiftTo('minutes', 'seconds').toObject()
@@ -64,11 +66,7 @@ function usePoolSwap({
     address: tokenA.native && executeAsNative ? tokenA.address : undefined
   })
 
-  const {
-    call: poolCall,
-    contract,
-    loading: poolLoading
-  } = usePoolContract({
+  const { call: poolCall, loading: poolLoading } = usePoolContract({
     address: poolFactory?.address
   })
 
@@ -93,15 +91,17 @@ function usePoolSwap({
   const getConstants = useCallback(async (): Promise<
     PoolConstants | undefined
   > => {
-    if (!contract) {
+    try {
+      const fee = await poolCall('fee')
+
+      return {
+        fee
+      }
+    } catch {
+      setStatus(PoolSwapStatus.PoolNotAvailable)
       return
     }
-    const fee = await poolCall('fee')
-
-    return {
-      fee
-    }
-  }, [poolCall, contract])
+  }, [poolCall])
 
   const getQuoteOut = useCallback(
     async (amount: string): Promise<string> => {
@@ -127,14 +127,16 @@ function usePoolSwap({
   )
 
   const executeTrade = async (amount: string) => {
+    setStatus(undefined)
+
     const provider = wallet.provider?.instance
     if (!provider) return
 
     const amountIn = parseUnits(amount, poolFactory.tokenA.decimals).toString()
 
     if (executeAsNative) {
-      // deposit native in exchange to wrapped native
-      await executeAsNativeDeposit(amountIn)
+      const isExchanged = await exchangeFromNativeBalance(amountIn)
+      if (!isExchanged) return
     }
 
     const isAllowanceApproved = await checkAllowanceApproval(amountIn)
@@ -143,43 +145,61 @@ function usePoolSwap({
     const constants = await getConstants()
     if (!constants) return
 
-    const params: RouterExactInputSingleParams = {
-      tokenIn: poolFactory.tokenA.address,
-      tokenOut: poolFactory.tokenB.address,
-      fee: constants.fee,
-      recipient: state.address,
-      deadline: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
-      amountIn: amountIn
+    try {
+      setDeadlineTime(60 * 10 * 1000) // 10 minutes
+
+      const receipt: ContractReceipt =
+        await routerCall<RouterExactInputSingleParams>('exactInputSingle', {
+          tokenIn: poolFactory.tokenA.address,
+          tokenOut: poolFactory.tokenB.address,
+          fee: constants.fee,
+          recipient: state.address,
+          deadline: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes unix
+          amountIn: amountIn
+        })
+
+      setStatus(PoolSwapStatus.ExecutionSuccess)
+
+      return receipt
+    } catch {
+      setStatus(PoolSwapStatus.ExecutionFailed)
+    } finally {
+      setDeadlineTime(0)
     }
-
-    setDeadlineTime(60 * 10 * 1000)
-
-    const receipt: ContractReceipt = await routerCall<typeof params>(
-      'exactInputSingle',
-      params
-    )
-
-    setDeadlineTime(0)
-
-    return receipt
   }
 
-  const executeAsNativeDeposit = async (amount: string) => {
-    return await wNativeCall('deposit', amount)
+  const exchangeFromNativeBalance = async (amount: string) => {
+    try {
+      await wNativeCall('deposit', amount)
+      return true
+    } catch {
+      setStatus(PoolSwapStatus.ExchangeNativeFailed)
+      return false
+    }
   }
 
   const checkAllowanceApproval = async (amount: string) => {
-    const allowance = await tokenACall(
-      'allowance',
-      state.address,
-      routerAddress
-    )
+    try {
+      const allowance = await tokenACall(
+        'allowance',
+        state.address,
+        routerAddress
+      )
 
-    const allowanceBN = new BigNumber(allowance)
-    if (allowanceBN.gte(amount)) return true
+      const allowanceBN = new BigNumber(allowance)
+      if (allowanceBN.gte(amount)) return true
 
-    const approved = await tokenACall('approve', routerAddress, amount)
-    return approved
+      const approved = await tokenACall<string, boolean | undefined>(
+        'approve',
+        routerAddress,
+        amount
+      )
+
+      return approved
+    } catch {
+      setStatus(PoolSwapStatus.AllowanceNotApproved)
+      return false
+    }
   }
 
   return {
@@ -190,7 +210,8 @@ function usePoolSwap({
     getConstants,
     getQuoteOut,
     executeTrade,
-    remainingTime
+    remainingTime,
+    status
   }
 }
 

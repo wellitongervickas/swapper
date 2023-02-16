@@ -46,6 +46,7 @@ const SwapTokenIn = ({
   }
 
   useEffect(() => {
+    if (!state.address) return
     call('balanceOf', state.address).then(
       (balance) => balance && setBalance(balance)
     )

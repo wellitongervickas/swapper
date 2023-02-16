@@ -130,7 +130,7 @@ const SwapWidget = ({
       <div className='flex flex-col space-y-4'>
         <SwapTokenIn
           token={tokens[0]}
-          disabled={loading || !state.connected}
+          disabled={isExecuting || !state.connected}
           amount={amount}
           onChangeAmount={handleChangeTokenA}
           onChangeUseNative={handleExecuteAsNative}

@@ -1,8 +1,10 @@
-import { Contract, Signer } from 'ethers'
+import { Contract, ContractTransaction, Signer } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import Router from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json'
 import { RouterExactInputSingleParams } from './types/router'
 import GenericContract from '../contracts/Generic'
+import { ContractErrors } from '../contracts/types/error'
+import Logger from '@/modules/utils/logger'
 
 class RouterContract {
   readonly name = 'RouterContract'
@@ -25,21 +27,39 @@ class RouterContract {
   }
 
   async exactInputSingle(params: RouterExactInputSingleParams) {
-    const payload = {
-      ...params,
-      amountOutMinimum: 0,
-      sqrtPriceLimitX96: 0
+    try {
+      const payload = [
+        {
+          ...params,
+          amountOutMinimum: 0,
+          sqrtPriceLimitX96: 0
+        }
+      ]
+
+      const estimate = await GenericContract.estimateGasByMethod(
+        this.contract,
+        'exactInputSingle',
+        payload
+      )
+
+      const gasLimit = await GenericContract.getGasLimit(estimate)
+      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
+
+      const transaction = (await this.contract.exactInputSingle(...payload, {
+        gasLimit,
+        gasPrice
+      })) as ContractTransaction
+
+      const receipt = await transaction.wait()
+
+      return receipt
+    } catch (error: any) {
+      Logger.error(
+        `${this.name} exactInputSingle call failed`,
+        ContractErrors.TxFailed,
+        error
+      )
     }
-
-    const receipt = await GenericContract.callTransactionByMethod.call(
-      this,
-      this.contract,
-      this.signerOrProvider,
-      'exactInputSingle',
-      payload
-    )
-
-    return receipt
   }
 }
 
