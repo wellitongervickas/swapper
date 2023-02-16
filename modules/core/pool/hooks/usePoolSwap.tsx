@@ -41,9 +41,7 @@ function usePoolSwap({
   const [deadlineTime, setDeadlineTime] = useState(0)
 
   const { label: remainingTime } = useRemainingTime(
-    Duration.fromMillis(deadlineTime)
-      .shiftTo('days', 'hours', 'minutes', 'seconds')
-      .toObject()
+    Duration.fromMillis(deadlineTime).shiftTo('minutes', 'seconds').toObject()
   )
 
   const poolFactory = useMemo(
