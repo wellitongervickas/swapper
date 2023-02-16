@@ -32,7 +32,7 @@ const HomepageWrapper = ({
           {description}
         </h2>
       </div>
-      {children}
+      <div className='flex items-center justify-end'>{children}</div>
     </div>
   </div>
 )

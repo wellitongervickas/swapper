@@ -113,12 +113,11 @@ const SwapWidget = ({
   }, [poolFactory])
 
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className={classnames.merge([className, 'flex flex-col space-y-4'])}>
       {typeof status !== 'undefined' && <SwapCardStatus status={status} />}
       <CardDefault
         {...props}
         className={classnames.merge([
-          className,
           'flex flex-col space-y-4 ring-2 ring-gray-900/50'
         ])}
       >
