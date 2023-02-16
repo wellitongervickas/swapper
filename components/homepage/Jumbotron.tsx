@@ -27,7 +27,7 @@ const HomepageWrapper = ({
     <div className='-z-2 absolute h-[26rem] w-full  bg-gradient-to-t from-black to-transparent'></div>
     <div className='z-2 relative grid grid-cols-1 gap-y-16 gap-x-0 py-24 container md:grid-cols-2 md:gap-x-16'>
       <div className='flex flex-col justify-center space-y-4'>
-        <h1 className='font-pixel text-[4rem] font-black text-primary drop-shadow-md'>
+        <h1 className='font-pixel text-[4rem] font-black leading-none text-primary drop-shadow-md'>
           {title}
         </h1>
         <h2 className='w-full pb-8 text-xl text-gray drop-shadow-md lg:w-2/3'>

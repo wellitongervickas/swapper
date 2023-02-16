@@ -12,7 +12,7 @@ export const SocialMediaDiscord = () => {
       <div
         className={classnames.merge([
           'rounded-md border border-white py-2 px-4 text-xs',
-          'flex items-center justify-between md:space-x-2'
+          'flex items-center justify-between space-x-2'
         ])}
       >
         <span>Join our community</span>
