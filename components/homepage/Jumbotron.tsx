@@ -15,8 +15,8 @@ const HomepageWrapper = ({
   title,
   description
 }: HomepageWrapperProps) => (
-  <div className='relative w-screen'>
-    <div className='-z-1 absolute h-[26rem] w-screen animate-pulse'>
+  <div className='relative w-full'>
+    <div className='-z-1 absolute h-[26rem] w-full animate-pulse'>
       <Image
         loading='eager'
         src='/assets/background.png'
@@ -24,8 +24,8 @@ const HomepageWrapper = ({
         fill
       />
     </div>
-    <div className='-z-2 absolute h-[26rem] w-screen  bg-gradient-to-t from-black to-transparent'></div>
-    <div className='z-2 relative grid grid-cols-1 gap-16 py-24 container md:grid-cols-2'>
+    <div className='-z-2 absolute h-[26rem] w-full  bg-gradient-to-t from-black to-transparent'></div>
+    <div className='z-2 relative grid grid-cols-1 gap-y-16 gap-x-0 py-24 container md:grid-cols-2 md:gap-x-16'>
       <div className='flex flex-col justify-center space-y-4'>
         <h1 className='font-pixel text-[4rem] font-black text-primary drop-shadow-md'>
           {title}
@@ -38,10 +38,10 @@ const HomepageWrapper = ({
         </div>
       </div>
       <div className='group relative'>
-        <div className='absolute  h-full w-full '>
+        <div className='absolute hidden h-full w-full md:block'>
           <div
             className={classnames.merge([
-              'absolute left-[6rem] top-0 hidden opacity-40 md:block',
+              'absolute left-[6rem] top-0 opacity-40',
               'transition-all duration-700 group-hover:-top-4'
             ])}
           >
