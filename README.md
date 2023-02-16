@@ -1,13 +1,18 @@
-Swapper DeFi
+# Swapper DeFi
 
 > run demo [http://swapper-psi.vercel.app](http://swapper-psi.vercel.app)
 
 ## Instructions
 
 - Get a [faucet](https://goerli.etherscan.io/address/0xF4D84843E3A0cbEAE3651612f9fAA5C9849b743d#writeContract#F3) of ERC20 SWPR token
-- You will need some WETH or ETH
+- You will need some WETH or ETH or exchange using the dApp.
 
 ## Development
+
+### Development Environment
+
+- Node v16.18.0
+- yarn 1.22.19 or npm 9.1.2
 
 First, run the development server:
 
@@ -25,4 +30,4 @@ npm run build && npm run start
 yarn build && yarn start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+both ways open using [http://localhost:3000](http://localhost:3000)
