@@ -1,6 +1,7 @@
 import config from '@/config'
 import Image from 'next/image'
 import { ReactNode } from 'react'
+import SocialMediaDiscord from '../shared/SocialMedias/Discord'
 
 interface HomepageWrapperProps {
   children?: ReactNode
@@ -28,9 +29,12 @@ const HomepageWrapper = ({
         <h1 className='text-5xl font-black text-primary drop-shadow-md'>
           {title}
         </h1>
-        <h2 className='w-full text-xl text-gray drop-shadow-md lg:w-2/3'>
+        <h2 className='w-full pb-8 text-xl text-gray drop-shadow-md lg:w-2/3'>
           {description}
         </h2>
+        <div className='flex'>
+          <SocialMediaDiscord />
+        </div>
       </div>
       <div className='flex items-center justify-end'>{children}</div>
     </div>
