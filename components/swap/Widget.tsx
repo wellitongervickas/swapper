@@ -32,16 +32,23 @@ const SwapWidget = ({
   const [tokens, setTokens] = useState<Token[]>([tokenA, tokenB])
   const [executeAsNative, setExecuteAsNative] = useState(false)
 
-  const { getQuoteOut, poolFactory, executeTrade, loading, isQuoting } =
-    usePoolSwap({
-      factoryAddress: config.hubs.uniswapFactory.address,
-      quoterAddress: config.hubs.uniswapQuoter.address,
-      routerAddress: config.hubs.uniswapRouter.address,
-      tokenA: tokens[0],
-      tokenB: tokens[1],
-      executeAsNative,
-      fee
-    })
+  const {
+    getQuoteOut,
+    poolFactory,
+    executeTrade,
+    loading,
+    isQuoting,
+    remainingTime,
+    isExecuting
+  } = usePoolSwap({
+    factoryAddress: config.hubs.uniswapFactory.address,
+    quoterAddress: config.hubs.uniswapQuoter.address,
+    routerAddress: config.hubs.uniswapRouter.address,
+    tokenA: tokens[0],
+    tokenB: tokens[1],
+    executeAsNative,
+    fee
+  })
 
   const [quote, setQuote] = useState('0')
   const [amount, setAmount] = useState('0')
@@ -122,10 +129,10 @@ const SwapWidget = ({
         <Divider />
         <SwapTokenOut token={tokens[1]} loading={isQuoting} amount={quote} />
         <div className='flex flex-col space-y-4'>
-          {executeAsNative && (
+          {!isExecuting && executeAsNative && (
             <SwapCardNativeExecutionAlert token={tokens[0]} />
           )}
-          <div>
+          <div className='flex items-center justify-between'>
             <Button
               loading={loading}
               onClick={handleExecuteSwap}
@@ -133,6 +140,7 @@ const SwapWidget = ({
             >
               Execute
             </Button>
+            {isExecuting && <span>{remainingTime}</span>}
           </div>
         </div>
       </div>

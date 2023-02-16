@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import { PoolFactory } from '../factory'
 import { PoolConstants } from '../types/factory'
@@ -13,6 +13,8 @@ import { BigNumber } from 'bignumber.js'
 import useRouterContract from './useRouterContract'
 import { RouterExactInputSingleParams } from '../types/router'
 import useWNativeContract from '../../contracts/hooks/useWNativeContract'
+import useRemainingTime from '@/modules/shared/hooks/useRemainingTime'
+import { Duration } from 'luxon'
 
 interface UsePoolSwapProps {
   factoryAddress: string
@@ -35,6 +37,13 @@ function usePoolSwap({
   executeAsNative
 }: UsePoolSwapProps) {
   const { state, wallet } = useWallet()
+  const [deadlineTime, setDeadlineTime] = useState(0)
+
+  const { label: remainingTime } = useRemainingTime(
+    Duration.fromMillis(deadlineTime)
+      .shiftTo('days', 'hours', 'minutes', 'seconds')
+      .toObject()
+  )
 
   const poolFactory = useMemo(
     () =>
@@ -71,6 +80,16 @@ function usePoolSwap({
   const { call: routerCall, loading: routerLoading } = useRouterContract({
     address: routerAddress
   })
+
+  const isLoading = useMemo(
+    () =>
+      tokenALoading ||
+      poolLoading ||
+      quoterLoading ||
+      routerLoading ||
+      nativeLoading,
+    [tokenALoading, poolLoading, quoterLoading, routerLoading, nativeLoading]
+  )
 
   const getConstants = useCallback(async (): Promise<
     PoolConstants | undefined
@@ -134,7 +153,9 @@ function usePoolSwap({
       amountIn: amountIn
     }
 
+    setDeadlineTime(params.deadline * 1000)
     const receipt = await routerCall('exactInputSingle', params)
+    setDeadlineTime(0)
 
     return receipt
   }
@@ -158,17 +179,14 @@ function usePoolSwap({
   }
 
   return {
-    loading:
-      tokenALoading ||
-      poolLoading ||
-      quoterLoading ||
-      routerLoading ||
-      nativeLoading,
+    loading: isLoading,
     isQuoting: quoterLoading,
+    isExecuting: routerLoading,
     poolFactory,
     getConstants,
     getQuoteOut,
-    executeTrade
+    executeTrade,
+    remainingTime
   }
 }
 
