@@ -6,12 +6,15 @@ import config from '@/config'
 import head from '@/modules/utils/head'
 
 import { Work_Sans } from '@next/font/google'
+import localFont from '@next/font/local'
 
 const fontSetup = Work_Sans({
   weight: ['400', '500', '600'],
   style: 'normal',
   subsets: ['latin']
 })
+
+const mainFontSetup = localFont({ src: '../public/assets/fonts/Pixel.ttf' })
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -20,6 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
         {`
           :root {
             --fontFamily: ${fontSetup.style.fontFamily};
+            --mainFontFamily: ${mainFontSetup.style.fontFamily};
           }
           body {
             font-family: var(--fontFamily);
