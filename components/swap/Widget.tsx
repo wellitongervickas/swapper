@@ -32,8 +32,6 @@ const SwapWidget = ({
   const config = useChainConfig()
   const { state } = useWallet()
 
-  console.log(tokenA, tokenB)
-
   const [tokens, setTokens] = useState<Token[]>([tokenA, tokenB])
   const [hashAddress, setHashAddress] = useState('')
   const [executeAsNative, setExecuteAsNative] = useState(false)
@@ -113,8 +111,6 @@ const SwapWidget = ({
       handleResetFields()
     }
   }, [poolFactory])
-
-  console.log(tokens)
 
   return (
     <div className={classnames.merge([className, 'flex flex-col space-y-4'])}>
