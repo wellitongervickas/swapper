@@ -1,4 +1,7 @@
 module.exports = {
+  fontFamily: {
+    sans: ['var(--fontFamily)', 'sans-serif']
+  },
   extend: {
     colors: {
       primary: {

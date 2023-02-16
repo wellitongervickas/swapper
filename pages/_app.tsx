@@ -5,9 +5,29 @@ import LayoutDefault from '@/components/shared/layouts/Default'
 import config from '@/config'
 import head from '@/modules/utils/head'
 
+import { Work_Sans } from '@next/font/google'
+
+const fontSetup = Work_Sans({
+  weight: ['400', '500', '600'],
+  style: 'normal',
+  subsets: ['latin']
+})
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
+      <style jsx global>
+        {`
+          :root {
+            --fontFamily: ${fontSetup.style.fontFamily};
+          }
+          body {
+            font-family: var(--fontFamily);
+            font-style: ${fontSetup.style.fontStyle};
+            font-weight: ${fontSetup.style.fontWeight || '400'};
+          }
+        `}
+      </style>
       <Head>
         <title>{head.renderTitle(config.name, pageProps)}</title>
         <link rel='icon' href='/favicon.ico' />
