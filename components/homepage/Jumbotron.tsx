@@ -1,4 +1,5 @@
 import config from '@/config'
+import classnames from '@/modules/utils/classnames'
 import Image from 'next/image'
 import { ReactNode } from 'react'
 import SocialMediaDiscord from '../shared/SocialMedias/Discord'
@@ -14,7 +15,7 @@ const HomepageWrapper = ({
   title,
   description
 }: HomepageWrapperProps) => (
-  <div className='group relative w-screen'>
+  <div className='relative w-screen'>
     <div className='-z-1 absolute h-[26rem] w-screen animate-pulse'>
       <Image
         loading='eager'
@@ -36,9 +37,14 @@ const HomepageWrapper = ({
           <SocialMediaDiscord />
         </div>
       </div>
-      <div className='relative'>
+      <div className='group relative'>
         <div className='absolute  h-full w-full '>
-          <div className='absolute left-[6rem] hidden opacity-40 md:block'>
+          <div
+            className={classnames.merge([
+              'absolute left-[6rem] top-0 hidden opacity-40 md:block',
+              'transition-all duration-700 group-hover:-top-4'
+            ])}
+          >
             <Image
               src='/assets/icons/ball.svg'
               alt='balls'
@@ -46,7 +52,12 @@ const HomepageWrapper = ({
               height={120}
             />
           </div>
-          <div className='absolute -bottom-16 hidden md:-right-8 md:block lg:-right-16'>
+          <div
+            className={classnames.merge([
+              'absolute -bottom-16 hidden md:-right-8 md:block lg:-right-16',
+              'transition-all duration-1000 group-hover:-bottom-8'
+            ])}
+          >
             <Image
               src='/assets/icons/ball.svg'
               alt='balls'
