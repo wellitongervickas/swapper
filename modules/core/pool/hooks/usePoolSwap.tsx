@@ -105,6 +105,8 @@ function usePoolSwap({
 
   const getQuoteOut = useCallback(
     async (amount: string): Promise<string> => {
+      setStatus(undefined)
+
       const constants = await getConstants()
       if (!constants) return '0'
 

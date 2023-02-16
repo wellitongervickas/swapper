@@ -14,6 +14,7 @@ import Divider from '../shared/Divider'
 import SwapCardNativeExecutionAlert from './Cards/NativeExecutionAlert'
 import { BigNumber } from 'bignumber.js'
 import SwapCardReceipt from './Cards/Receipt'
+import SwapCardStatus from './Cards/Status'
 
 interface SwapWidgetProps extends ComponentProps<'div'> {
   tokenA: Token
@@ -42,7 +43,8 @@ const SwapWidget = ({
     loading,
     isQuoting,
     remainingTime,
-    isExecuting
+    isExecuting,
+    status
   } = usePoolSwap({
     factoryAddress: config.hubs.uniswapFactory.address,
     quoterAddress: config.hubs.uniswapQuoter.address,
@@ -111,51 +113,54 @@ const SwapWidget = ({
   }, [poolFactory])
 
   return (
-    <CardDefault
-      {...props}
-      className={classnames.merge([
-        className,
-        'flex flex-col space-y-4 ring-2 ring-gray-900/50'
-      ])}
-    >
-      <div className='flex'>
-        <SwapSwitch
-          disabled={loading || !state.connected}
-          activeToken={tokens[0]}
-          tokenA={tokenA}
-          tokenB={tokenB}
-          onSwitch={handleSwitchTokens}
-        />
-      </div>
-      <div className='flex flex-col space-y-4'>
-        <SwapTokenIn
-          token={tokens[0]}
-          disabled={isExecuting || !state.connected}
-          amount={amount}
-          onChangeAmount={handleChangeTokenA}
-          onChangeUseNative={handleExecuteAsNative}
-          executeAsNativeValue={executeAsNative}
-        />
-        <Divider />
-        <SwapTokenOut token={tokens[1]} loading={isQuoting} amount={quote} />
+    <div className='flex flex-col space-y-4'>
+      {typeof status !== 'undefined' && <SwapCardStatus status={status} />}
+      <CardDefault
+        {...props}
+        className={classnames.merge([
+          className,
+          'flex flex-col space-y-4 ring-2 ring-gray-900/50'
+        ])}
+      >
+        <div className='flex'>
+          <SwapSwitch
+            disabled={loading || !state.connected}
+            activeToken={tokens[0]}
+            tokenA={tokenA}
+            tokenB={tokenB}
+            onSwitch={handleSwitchTokens}
+          />
+        </div>
         <div className='flex flex-col space-y-4'>
-          {!isExecuting && executeAsNative && (
-            <SwapCardNativeExecutionAlert token={tokens[0]} />
-          )}
-          <div className='flex items-center justify-between'>
-            <Button
-              loading={loading}
-              onClick={handleExecuteSwap}
-              disabled={loading || !state.connected || isAmountZero}
-            >
-              {isExecuting ? 'Executing' : 'Execute'}
-            </Button>
-            {isExecuting && <span>{remainingTime}</span>}
+          <SwapTokenIn
+            token={tokens[0]}
+            disabled={isExecuting || !state.connected}
+            amount={amount}
+            onChangeAmount={handleChangeTokenA}
+            onChangeUseNative={handleExecuteAsNative}
+            executeAsNativeValue={executeAsNative}
+          />
+          <Divider />
+          <SwapTokenOut token={tokens[1]} loading={isQuoting} amount={quote} />
+          <div className='flex flex-col space-y-4'>
+            {!isExecuting && executeAsNative && (
+              <SwapCardNativeExecutionAlert token={tokens[0]} />
+            )}
+            <div className='flex items-center justify-between'>
+              <Button
+                loading={loading}
+                onClick={handleExecuteSwap}
+                disabled={loading || !state.connected || isAmountZero}
+              >
+                {isExecuting ? 'Executing' : 'Execute'}
+              </Button>
+              {isExecuting && <span>{remainingTime}</span>}
+            </div>
           </div>
         </div>
-      </div>
-      {hashAddress && <SwapCardReceipt hashAddress={hashAddress} />}
-    </CardDefault>
+        {hashAddress && <SwapCardReceipt hashAddress={hashAddress} />}
+      </CardDefault>
+    </div>
   )
 }
 

@@ -15,7 +15,7 @@ export default function useContractCaller<CONTRACT = any>() {
       setLoading(true)
 
       try {
-        return (contract[method] as Function)(...args)
+        return await (contract[method] as Function)(...args)
       } finally {
         setLoading(false)
       }
