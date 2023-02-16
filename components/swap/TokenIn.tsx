@@ -1,6 +1,5 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Token } from '@/modules/core/tokens/types/token'
-
 import Input from '../shared/form/Input'
 import useERC20Contract from '@/modules/core/contracts/hooks/useERC20Contract'
 import { commify, formatUnits } from 'ethers/lib/utils'
@@ -34,9 +33,17 @@ const SwapTokenIn = ({
     address: native ? undefined : token.address
   })
 
+  const handleCheckBalance = useCallback(async () => {
+    await call('balanceOf', state.address).then(
+      (balance) => balance && setBalance(balance)
+    )
+    console.log('called')
+  }, [state.address, call])
+
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     onChangeAmount(value)
+    handleCheckBalance()
   }
 
   const handleChangeToNative = (event: ChangeEvent<HTMLInputElement>) => {
@@ -47,10 +54,8 @@ const SwapTokenIn = ({
 
   useEffect(() => {
     if (!state.address) return
-    call('balanceOf', state.address).then(
-      (balance) => balance && setBalance(balance)
-    )
-  }, [call, state.address])
+    handleCheckBalance()
+  }, [handleCheckBalance, state.address])
 
   return (
     <div className='flex flex-col space-y-4'>
