@@ -1,6 +1,7 @@
 import { SignerOrProvider } from './../entities/provider'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
+import { Contract } from '../entities/contract'
 
 export class ContractUtility {
   static readonly DEFAULT_GAS_LIMIT = ethers.BigNumber.from(250000)
@@ -21,7 +22,7 @@ export class ContractUtility {
   }
 
   static async estimateGasByMethod(
-    contract: ethers.Contract,
+    contract: typeof Contract.prototype,
     method: string,
     ...args: any[]
   ) {

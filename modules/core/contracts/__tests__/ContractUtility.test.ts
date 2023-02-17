@@ -1,8 +1,6 @@
 import { providers } from '../../entities/provider'
 import { BigNumber } from '../../entities/numbers'
-
 import ContractUtility from '../ContractUtility'
-import { ContractFactory } from '../../entities/contract'
 
 describe('ContractUtility: DEFAULT_GAS_LIMIT', () => {
   it('should return default gas limit', () => {
@@ -26,5 +24,37 @@ describe('ContractUtility: DEFAULT_GAS_LIMIT', () => {
     expect(await ContractUtility.getGasPrice(provider)).toBe('130')
   })
 
-  it.skip('should estimate gas by method', async () => {})
+  it('should estimate gas by method', async () => {
+    const decimals = jest.fn(() => Promise.resolve(BigNumber.from(210000)))
+
+    const contract = {
+      estimateGas: {
+        decimals
+      }
+    } as any
+
+    const estimate = await ContractUtility.estimateGasByMethod(
+      contract,
+      'decimals'
+    )
+
+    expect(estimate.toString()).toBe('210000')
+  })
+
+  it('should return default estimate gas by method when the contract doest work', async () => {
+    const decimals = jest.fn(() => Promise.reject())
+
+    const contract = {
+      estimateGas: {
+        decimals
+      }
+    } as any
+
+    const estimate = await ContractUtility.estimateGasByMethod(
+      contract,
+      'decimals'
+    )
+
+    expect(estimate.toString()).toBe('250000')
+  })
 })
