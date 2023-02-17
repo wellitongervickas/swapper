@@ -41,7 +41,7 @@ describe('ContractUtility: DEFAULT_GAS_LIMIT', () => {
     expect(estimate.toString()).toBe('210000')
   })
 
-  it('should return default estimate gas by method when the contract doest work', async () => {
+  it('should estimate gas by method using the default value when throws', async () => {
     const decimals = jest.fn(() => Promise.reject())
 
     const contract = {
