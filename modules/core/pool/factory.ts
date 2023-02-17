@@ -14,7 +14,6 @@ export class PoolFactory {
     this.chainId = params.chainId
     this.factoryAddress = params.factoryAddress
     this.fee = params.fee
-
     this.tokenA = PoolFactory.buildToken(params.chainId, params.tokenA)
     this.tokenB = PoolFactory.buildToken(params.chainId, params.tokenB)
   }

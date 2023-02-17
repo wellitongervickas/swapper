@@ -35,11 +35,11 @@ const SwapTokenIn = ({
   })
 
   const handleCheckBalance = useCallback(async () => {
-    if (!state.address) return
+    if (!state.address || !state.connected) return
     await call('balanceOf', state.address).then(
       (balance) => balance && setBalance(balance)
     )
-  }, [state.address, call])
+  }, [state.address, state.connected, call])
 
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value

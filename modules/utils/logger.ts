@@ -3,20 +3,34 @@ class Logger {
     error: string,
     code: number | string,
     errorMessage?: Error,
-    silent?: boolean
+    silent?:
+      | boolean
+      | {
+          log?: boolean
+          thrower?: boolean
+        }
   ) {
     const extendedError = errorMessage?.message
       ? errorMessage.message
       : errorMessage
-    console.error(extendedError)
 
-    if (silent) return
+    if (
+      (typeof silent === 'boolean' && !silent) ||
+      (typeof silent !== 'boolean' && !silent?.log)
+    ) {
+      console.error(extendedError)
+    }
 
-    throw new Error(`${error}: ${extendedError}`, {
-      cause: {
-        code
-      }
-    })
+    if (
+      (typeof silent === 'boolean' && !silent) ||
+      (typeof silent !== 'boolean' && !silent?.thrower)
+    ) {
+      throw new Error(`${error}: ${extendedError}`, {
+        cause: {
+          code
+        }
+      })
+    }
   }
 }
 

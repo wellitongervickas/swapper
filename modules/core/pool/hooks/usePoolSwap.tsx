@@ -191,11 +191,7 @@ function usePoolSwap({
       const allowanceBN = new BigNumber(allowance)
       if (allowanceBN.gte(amount)) return true
 
-      const approved = await tokenACall<string, boolean>(
-        'approve',
-        routerAddress,
-        amount
-      )
+      const approved = await tokenACall('approve', routerAddress, amount)
 
       return !!approved
     } catch {

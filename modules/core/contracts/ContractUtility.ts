@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js'
 import { ethers, Signer } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 
-export const DEFAULT_GAS_LIMIT = ethers.BigNumber.from(250000)
+export class ContractUtility {
+  static readonly DEFAULT_GAS_LIMIT = ethers.BigNumber.from(250000)
 
-export class GenericContract {
   static async getGasLimit(limit: ethers.BigNumber, decimals: number = 18) {
     return new BigNumber(limit.toString(), decimals)
       .multipliedBy(1.3)
@@ -29,9 +29,9 @@ export class GenericContract {
       const estimate = await contract.estimateGas[method](args)
       return estimate
     } catch {
-      return DEFAULT_GAS_LIMIT
+      return ContractUtility.DEFAULT_GAS_LIMIT
     }
   }
 }
 
-export default GenericContract
+export default ContractUtility

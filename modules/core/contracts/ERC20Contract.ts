@@ -1,32 +1,22 @@
-import { Contract, ContractTransaction, ethers, Signer } from 'ethers'
-import { Provider } from '@ethersproject/providers'
 import { ContractErrors } from '@/modules/core/contracts/types/error'
 import Logger from '@/modules/utils/logger'
-import GenericContract from './Generic'
+import ContractFactory from './ContractFactory'
+import { SignerOrProvider } from '../entities/provider'
+import { ContractTransaction } from '../entities/contract'
 
-class ERC20Contract {
+class ERC20Contract extends ContractFactory {
   readonly _name = 'ERC20Contract'
 
-  #contract: typeof Contract.prototype
-  #signerOrProvider: Signer | Provider
-
-  #abi = [
-    'function balanceOf(address spender) view returns (uint)',
-    'function approve(address spender, uint256 amount) external returns (bool)',
-    'function allowance(address owner, address spender) external view returns (uint256)'
-  ]
-
-  constructor(contractAddress: string, signerOrProvider: Signer | Provider) {
-    this.#signerOrProvider = signerOrProvider
-    this.#contract = new Contract(contractAddress, this.#abi, signerOrProvider)
-  }
-
-  get contract() {
-    return this.#contract
-  }
-
-  get signerOrProvider() {
-    return this.#signerOrProvider
+  constructor(address: string, signerOrProvider: SignerOrProvider) {
+    super(
+      address,
+      [
+        'function balanceOf(address spender) view returns (uint)',
+        'function approve(address spender, uint256 amount) external returns (bool)',
+        'function allowance(address owner, address spender) external view returns (uint256)'
+      ],
+      signerOrProvider
+    )
   }
 
   async allowance(owner: string, spender: string) {
@@ -42,18 +32,18 @@ class ERC20Contract {
     }
   }
 
-  async approve(spender: string, amount: ethers.BigNumber) {
+  async approve(spender: string, amount: string) {
     try {
       const payload = [spender, amount]
 
-      const estimate = await GenericContract.estimateGasByMethod(
+      const estimate = await ERC20Contract.estimateGasByMethod(
         this.contract,
         'approve',
         payload
       )
 
-      const gasLimit = await GenericContract.getGasLimit(estimate)
-      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
+      const gasLimit = await ERC20Contract.getGasLimit(estimate)
+      const gasPrice = await ERC20Contract.getGasPrice(this.signerOrProvider)
 
       const transaction = (await this.contract.approve(...payload, {
         gasLimit,
@@ -72,7 +62,7 @@ class ERC20Contract {
     }
   }
 
-  async balanceOf(address: string): Promise<string> {
+  async balanceOf(address: string): Promise<string | undefined> {
     try {
       const balanceOf = await this.contract.balanceOf(address)
 
@@ -81,11 +71,12 @@ class ERC20Contract {
       Logger.error(
         `${this._name} balanceOf call failed`,
         ContractErrors.TxFailed,
-        error
+        error,
+        true
       )
-
-      return '0'
     }
+
+    return '0'
   }
 }
 

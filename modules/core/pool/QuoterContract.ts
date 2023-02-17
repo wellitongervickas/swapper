@@ -1,23 +1,20 @@
-import { Contract, Signer } from 'ethers'
-import { Provider } from '@ethersproject/providers'
 import Logger from '@/modules/utils/logger'
 import { ContractErrors } from '../contracts/types/error'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { QuoteExactInputSingleParams } from './types/quoter'
+import ContractFactory from '../contracts/ContractFactory'
+import { SignerOrProvider } from '../entities/provider'
 
-class QuoterContract {
+class QuoterContract extends ContractFactory {
   readonly name = 'QuoterContract'
 
-  #contract: typeof Contract.prototype
-  #abi = Quoter.abi
-
-  constructor(contractAddress: string, signerOrProvider: Signer | Provider) {
-    this.#contract = new Contract(contractAddress, this.#abi, signerOrProvider)
+  constructor(address: string, signerOrProvider: SignerOrProvider) {
+    super(address, Quoter.abi, signerOrProvider)
   }
 
   async quoteExactInputSingle(
     params: QuoteExactInputSingleParams
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     try {
       const payload = [
         params.tokenIn,
@@ -28,7 +25,7 @@ class QuoterContract {
       ]
 
       const quotedAmountOut =
-        await this.#contract.callStatic.quoteExactInputSingle(...payload)
+        await this.contract.callStatic.quoteExactInputSingle(...payload)
 
       return quotedAmountOut.toString()
     } catch (error: any) {
@@ -38,8 +35,6 @@ class QuoterContract {
         error,
         true
       )
-
-      return '0'
     }
   }
 }

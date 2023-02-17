@@ -1,48 +1,30 @@
-import { Contract, ContractTransaction, Signer } from 'ethers'
-import { Provider } from '@ethersproject/providers'
-import GenericContract from './Generic'
-import { ContractErrors } from './types/error'
+import { ContractErrors } from '@/modules/core/contracts/types/error'
 import Logger from '@/modules/utils/logger'
+import ContractFactory from './ContractFactory'
+import { SignerOrProvider } from '../entities/provider'
+import { ContractTransaction } from '../entities/contract'
 
-class WNativeContract {
+class WNativeContract extends ContractFactory {
   readonly _name = 'WNativeContract'
 
-  #contract: typeof Contract.prototype
-  #signerOrProvider: Signer | Provider
-
-  #abi = ['function deposit() payable']
-
-  constructor(contractAddress: string, signerOrProvider: Signer | Provider) {
-    this.#signerOrProvider = signerOrProvider
-    this.#contract = new Contract(contractAddress, this.#abi, signerOrProvider)
-  }
-
-  get contract() {
-    return this.#contract
-  }
-
-  get signerOrProvider() {
-    return this.#signerOrProvider
+  constructor(address: string, signerOrProvider: SignerOrProvider) {
+    super(address, ['function deposit() payable'], signerOrProvider)
   }
 
   async deposit(amount: string) {
     try {
-      const estimate = await GenericContract.estimateGasByMethod(
+      const estimate = await WNativeContract.estimateGasByMethod(
         this.contract,
         'deposit'
       )
-
-      const gasLimit = await GenericContract.getGasLimit(estimate)
-      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
-
+      const gasLimit = await WNativeContract.getGasLimit(estimate)
+      const gasPrice = await WNativeContract.getGasPrice(this.signerOrProvider)
       const transaction = (await this.contract.deposit({
         gasLimit,
         gasPrice,
         value: amount
       })) as ContractTransaction
-
       const receipt = await transaction.wait()
-
       return receipt
     } catch (error: any) {
       Logger.error(

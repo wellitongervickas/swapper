@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-
 import useContractCaller from '@/modules/core/contracts/hooks/useContractCaller'
 import useWallet from '@/modules/core/wallet/hooks/useWallet'
 import ERC20Contract from '../ERC20Contract'

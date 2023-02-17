@@ -1,29 +1,17 @@
-import { Contract, ContractTransaction, Signer } from 'ethers'
-import { Provider } from '@ethersproject/providers'
 import Router from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json'
+
 import { RouterExactInputSingleParams } from './types/router'
-import GenericContract from '../contracts/Generic'
 import { ContractErrors } from '../contracts/types/error'
 import Logger from '@/modules/utils/logger'
+import ContractFactory from '../contracts/ContractFactory'
+import { SignerOrProvider } from '../entities/provider'
+import { ContractTransaction } from '../entities/contract'
 
-class RouterContract {
+class RouterContract extends ContractFactory {
   readonly name = 'RouterContract'
 
-  #contract: typeof Contract.prototype
-  #abi = Router.abi
-  #signerOrProvider: Signer | Provider
-
-  constructor(contractAddress: string, signerOrProvider: Signer | Provider) {
-    this.#signerOrProvider = signerOrProvider
-    this.#contract = new Contract(contractAddress, this.#abi, signerOrProvider)
-  }
-
-  get contract() {
-    return this.#contract
-  }
-
-  get signerOrProvider() {
-    return this.#signerOrProvider
+  constructor(address: string, signerOrProvider: SignerOrProvider) {
+    super(address, Router.abi, signerOrProvider)
   }
 
   async exactInputSingle(params: RouterExactInputSingleParams) {
@@ -36,14 +24,14 @@ class RouterContract {
         }
       ]
 
-      const estimate = await GenericContract.estimateGasByMethod(
+      const estimate = await RouterContract.estimateGasByMethod(
         this.contract,
         'exactInputSingle',
         payload
       )
 
-      const gasLimit = await GenericContract.getGasLimit(estimate)
-      const gasPrice = await GenericContract.getGasPrice(this.signerOrProvider)
+      const gasLimit = await RouterContract.getGasLimit(estimate)
+      const gasPrice = await RouterContract.getGasPrice(this.signerOrProvider)
 
       const transaction = (await this.contract.exactInputSingle(...payload, {
         gasLimit,
