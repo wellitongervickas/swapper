@@ -1,6 +1,6 @@
+import { SignerOrProvider } from './../entities/provider'
 import BigNumber from 'bignumber.js'
-import { ethers, Signer } from 'ethers'
-import { Provider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
 
 export class ContractUtility {
   static readonly DEFAULT_GAS_LIMIT = ethers.BigNumber.from(250000)
@@ -12,7 +12,7 @@ export class ContractUtility {
       .toString()
   }
 
-  static async getGasPrice(provider: Signer | Provider) {
+  static async getGasPrice(provider: SignerOrProvider) {
     const price = await provider.getGasPrice()
     return new BigNumber(price.toString())
       .multipliedBy(1.3)
