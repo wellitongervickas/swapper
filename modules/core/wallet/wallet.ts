@@ -86,7 +86,11 @@ class Wallet {
     const currentChain = this.#store.chainId
     const isNetworkAllowed = this.#options.allowedChains.includes(currentChain)
     if (isNetworkAllowed) return
-    this.provider?.switchNetwork(this.#options.defaultChainId)
+    try {
+      this.provider?.switchNetwork(this.#options.defaultChainId)
+    } catch {
+      this.disconnect()
+    }
   }
 
   async disconnect() {
