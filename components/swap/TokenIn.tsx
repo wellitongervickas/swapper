@@ -35,6 +35,7 @@ const SwapTokenIn = ({
   })
 
   const handleCheckBalance = useCallback(async () => {
+    if (!state.address) return
     await call('balanceOf', state.address).then(
       (balance) => balance && setBalance(balance)
     )
