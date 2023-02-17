@@ -31,3 +31,12 @@ yarn build && yarn start
 ```
 
 both ways open using [http://localhost:3000](http://localhost:3000)
+
+### Testing
+
+You can test running the package script `test`
+
+```bash
+yarn test
+npm run test
+```
