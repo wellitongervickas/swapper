@@ -42,7 +42,7 @@ class ERC20Contract extends ContractFactory {
         payload
       )
 
-      const gasLimit = await ERC20Contract.getGasLimit(estimate)
+      const gasLimit = ERC20Contract.getGasLimit(estimate)
       const gasPrice = await ERC20Contract.getGasPrice(this.signerOrProvider)
 
       const transaction = (await this.contract.approve(...payload, {

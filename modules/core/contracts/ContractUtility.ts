@@ -5,7 +5,7 @@ import { Provider } from '@ethersproject/providers'
 export class ContractUtility {
   static readonly DEFAULT_GAS_LIMIT = ethers.BigNumber.from(250000)
 
-  static async getGasLimit(limit: ethers.BigNumber, decimals: number = 18) {
+  static getGasLimit(limit: ethers.BigNumber, decimals: number = 18) {
     return new BigNumber(limit.toString(), decimals)
       .multipliedBy(1.3)
       .toFixed(0)

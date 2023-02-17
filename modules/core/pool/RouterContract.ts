@@ -30,7 +30,7 @@ class RouterContract extends ContractFactory {
         payload
       )
 
-      const gasLimit = await RouterContract.getGasLimit(estimate)
+      const gasLimit = RouterContract.getGasLimit(estimate)
       const gasPrice = await RouterContract.getGasPrice(this.signerOrProvider)
 
       const transaction = (await this.contract.exactInputSingle(...payload, {

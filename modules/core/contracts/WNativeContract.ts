@@ -17,7 +17,7 @@ class WNativeContract extends ContractFactory {
         this.contract,
         'deposit'
       )
-      const gasLimit = await WNativeContract.getGasLimit(estimate)
+      const gasLimit = WNativeContract.getGasLimit(estimate)
       const gasPrice = await WNativeContract.getGasPrice(this.signerOrProvider)
       const transaction = (await this.contract.deposit({
         gasLimit,
