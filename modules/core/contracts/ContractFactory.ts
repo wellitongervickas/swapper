@@ -5,7 +5,7 @@ import ContractUtility from './ContractUtility'
 class ContractFactory extends ContractUtility {
   name = 'contract'
 
-  #contract: typeof Contract.prototype
+  #contract: Contract
   #signerOrProvider: SignerOrProvider
   #abi: Interface
 

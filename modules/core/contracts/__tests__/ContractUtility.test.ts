@@ -1,5 +1,5 @@
-import { providers } from '../../entities/provider'
-import { BigNumber } from '../../entities/numbers'
+import { providers } from '@/modules/core/entities/provider'
+import { BigNumber } from '@/modules/core/entities/numbers'
 import ContractUtility from '../ContractUtility'
 
 describe('ContractUtility: DEFAULT_GAS_LIMIT', () => {
@@ -41,7 +41,7 @@ describe('ContractUtility: DEFAULT_GAS_LIMIT', () => {
     expect(estimate.toString()).toBe('210000')
   })
 
-  it('should estimate gas by method using the default value when throws', async () => {
+  it('should estimate gas by method using the default value if throws', async () => {
     const decimals = jest.fn(() => Promise.reject())
 
     const contract = {
@@ -55,6 +55,8 @@ describe('ContractUtility: DEFAULT_GAS_LIMIT', () => {
       'decimals'
     )
 
-    expect(estimate.toString()).toBe('250000')
+    expect(estimate.toString()).toBe(
+      ContractUtility.DEFAULT_GAS_LIMIT.toString()
+    )
   })
 })

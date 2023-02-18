@@ -22,7 +22,7 @@ export class ContractUtility {
   }
 
   static async estimateGasByMethod(
-    contract: typeof Contract.prototype,
+    contract: Contract,
     method: string,
     ...args: any[]
   ) {
